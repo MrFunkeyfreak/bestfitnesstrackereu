@@ -74,6 +74,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "******",
+                    counterText: 'Forgot password?',
+                    suffixIcon: Icon(Icons.visibility_off_outlined, color: Colors.grey,),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20)
                     )
@@ -97,12 +99,6 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                       Text("Admin/Wissenschaftler",)
                     ],
                   ),
-
-                  Text(
-                    "Forgot password",
-                    style: TextStyle(
-                      color: Colors.white,
-                  ))
                 ],
               ),
 
@@ -113,7 +109,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                   Navigator.of(context).pushNamed(InformationRoute);
                 },
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.grey,
+                  decoration: BoxDecoration(color: Colors.deepPurple,
                   borderRadius: BorderRadius.circular(20)),
                   alignment: Alignment.center,
                   width: double.maxFinite,
@@ -121,9 +117,32 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                   child: Text(
                     "Login",
                     style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                   ),)
               )
+              ),
+
+              SizedBox(height: 15,),
+
+              Row(
+                children: [
+                  Expanded(
+                      child: Divider(
+                        height: 50,
+                         color: Colors.grey[500],
+                      )
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Du bist noch nicht registriert?'),
+                  ),
+                  Expanded(
+                      child: Divider(
+                        height: 50,
+                        color: Colors.grey[500],
+                      )
+                  ),
+                ],
               ),
 
               SizedBox(height: 15,),
@@ -133,7 +152,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     Navigator.of(context).pushNamed(RegristrationRoute);
                   },
                   child: Container(
-                      decoration: BoxDecoration(color: Colors.grey,
+                      decoration: BoxDecoration(color: Colors.deepPurple,
                           borderRadius: BorderRadius.circular(20)),
                       alignment: Alignment.center,
                       width: double.maxFinite,
@@ -141,17 +160,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                       child: Text(
                         "Teilnehmer werden",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                         ),)
                   )
               ),
-
-              RichText(text: TextSpan(
-                  children: [
-                    TextSpan(text: "Do not have admin credentials?\n"),
-                    TextSpan(text: "Request credentials!", style: TextStyle(color: Colors.black))
-                  ]
-              ))
             ],
           ),
         )
