@@ -43,6 +43,7 @@ class SideMenuDrawer extends StatelessWidget {
                 RegristrationRoute,
                 icon: IconData(0xe08c, fontFamily: 'MaterialIcons'),
             ),
+            SizedBox(height: 30,),
           ],
         ),
       ),

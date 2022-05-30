@@ -5,7 +5,8 @@ import 'package:bestfitnesstrackereu/pages/neuigkeiten/neuigkeiten_view.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import '../pages/404/error_page.dart';
-import '../pages/regristration/regristration_view.dart';
+import '../pages/registration/regristration_view.dart';
+
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   var routingData = settings.name.getRoutingData; // Get the routing Data
@@ -17,7 +18,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AuthenticationPageRoute:
       return _getPageRoute(AuthenticationPage(), settings);
     case RegristrationRoute:
-      return _getPageRoute(RegristrationView(), settings);
+      return _getPageRoute(RegistrationView(), settings);
     default:
       return _getPageRoute(PageNotFound(), settings);
   }
