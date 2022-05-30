@@ -73,7 +73,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 obscureText: true,
                 decoration: InputDecoration(
                     labelText: "Password",
-                    hintText: "123",
+                    hintText: "******",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20)
                     )

@@ -5,7 +5,7 @@ import 'sidemenu_drawer_header.dart';
 
 class SideMenuDrawer extends StatelessWidget {
 
-//drawer für hamburgericon (menu) in mobile screen
+//drawer for hamburgericon (menu) in mobile screen
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -30,7 +30,7 @@ class SideMenuDrawer extends StatelessWidget {
             TopNavBarItem(
               'Neuigkeiten',
               NeuigkeitenRoute,
-              icon: Icons.videocam,
+              icon: IconData(0xf0639, fontFamily: 'MaterialIcons'),
             ),
             Spacer(),
             TopNavBarItem(
