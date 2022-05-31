@@ -2,20 +2,31 @@ import 'package:bestfitnesstrackereu/pages/layout_template/layout_template.dart'
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:bestfitnesstrackereu/routing/router.dart';
 import 'package:bestfitnesstrackereu/services/navigation_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'locator.dart';
 
 
-void main() {
-  setupLocator();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: "AIzaSyCaos63TeR_y3YVXxD5x180IYz3ssQeWHE",
+      appId: "1:414667114455:web:e0d8cdd30559bc41576d92",
+      messagingSenderId: "414667114455",
+      projectId: "thebasics-fb4e8",
+    ),
+  );
+
   runApp(MyApp());
+  setupLocator();
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BestFitnesstrackerEU',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: Theme.of(context).textTheme.apply(

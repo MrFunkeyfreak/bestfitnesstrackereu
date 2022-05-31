@@ -1,5 +1,5 @@
-
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthenticationPage extends StatefulWidget {
@@ -11,6 +11,26 @@ class AuthenticationPage extends StatefulWidget {
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
   bool checkBoxValue = false;
+  //textfield controllers:
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+
+  Future signIn() async{
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim()
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +78,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               SizedBox(height: 15,),
 
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   labelText: "E-Mail",
                   hintText: "abc@domain.com",
+                    suffixIcon: Icon(Icons.mail_outline,),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20)
                   )
@@ -70,15 +92,36 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               SizedBox(height: 15,),
 
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "******",
-                    counterText: 'Forgot password?',
-                    suffixIcon: Icon(Icons.visibility_off_outlined, color: Colors.grey,),
+                    suffixIcon: Icon(Icons.lock_outline, color: Colors.grey,),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20)
                     )
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(ForgotPasswordRoute);
+                        },
+                      child: Text(
+                        'Forgot Password',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
 
@@ -106,7 +149,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
               InkWell(
                 onTap: (){
-                  Navigator.of(context).pushNamed(InformationRoute);
+                  signIn();
+                  Navigator.of(context).pushNamed(DashboardRoute);
                 },
                 child: Container(
                   decoration: BoxDecoration(color: Colors.deepPurple,

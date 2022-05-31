@@ -2,6 +2,8 @@ const String InformationRoute = "/info";
 const String NeuigkeitenRoute = "/news";
 const String AuthenticationPageRoute = "/login";
 const String RegristrationRoute = "/registrieren";
+const String DashboardRoute = "/dashboard";
+const String ForgotPasswordRoute = "/forgot_password";
 
 
 class MenuItem{
@@ -16,4 +18,6 @@ List <MenuItem> sideMenuItems = [
   MenuItem('Episodes', NeuigkeitenRoute),
   MenuItem('Login', AuthenticationPageRoute),
   MenuItem('Registrieren', RegristrationRoute),
+  MenuItem('Dashboard', DashboardRoute),
+  MenuItem('Passwort vergessen', ForgotPasswordRoute),
 ];
