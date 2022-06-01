@@ -73,7 +73,7 @@ class _RegristrationViewState extends State<RegistrationView> {
         _firstNameController.text.trim(),
         _nameController.text.trim(),
         _birthDateInString,
-        _genderSelected
+        _genderSelected,
       );
     }
   }
@@ -124,7 +124,7 @@ class _RegristrationViewState extends State<RegistrationView> {
                 Row(
                   children: [
                     Text(
-                        "Welcome to the registrations panel",
+                        "Wilkommen zur Registration",
                         style: TextStyle(
                           color: Colors.grey,))
                   ],
@@ -135,7 +135,7 @@ class _RegristrationViewState extends State<RegistrationView> {
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                      labelText: "Username",
+                      labelText: "Benutzername",
                       hintText: "Max123",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20)
@@ -162,7 +162,7 @@ class _RegristrationViewState extends State<RegistrationView> {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                      labelText: "Password",
+                      labelText: "Passwort",
                       hintText: "******",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20)
@@ -176,7 +176,7 @@ class _RegristrationViewState extends State<RegistrationView> {
                   controller: _confirmPasswordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                      labelText: "Password Wiederholung",
+                      labelText: "Passwort wiederholen",
                       hintText: "******",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20)
@@ -288,7 +288,7 @@ class _RegristrationViewState extends State<RegistrationView> {
                       Navigator.of(context).pushNamed(DashboardRoute);
                     },
                     child: Container(
-                        decoration: BoxDecoration(color: Colors.grey,
+                        decoration: BoxDecoration(color: Colors.deepPurple,
                             borderRadius: BorderRadius.circular(20)),
                         alignment: Alignment.center,
                         width: double.maxFinite,
@@ -296,7 +296,50 @@ class _RegristrationViewState extends State<RegistrationView> {
                         child: Text(
                           "Registrieren",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
+                          ),)
+                    )
+                ),
+
+                SizedBox(height: 15,),
+
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(
+                          height: 50,
+                          color: Colors.grey[500],
+                        )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Du bist schon registriert?'),
+                    ),
+                    Expanded(
+                        child: Divider(
+                          height: 50,
+                          color: Colors.grey[500],
+                        )
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 15,),
+
+                InkWell(
+                    onTap: (){
+                      Navigator.of(context).pushNamed(AuthenticationPageRoute);
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(color: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(20)),
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Zum Login",
+                          style: TextStyle(
+                            color: Colors.white,
                           ),)
                     )
                 ),

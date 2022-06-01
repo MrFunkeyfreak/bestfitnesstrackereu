@@ -1,16 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../routing/route_names.dart';
-
-class DashboardView extends StatefulWidget {
-  const DashboardView ({Key key}) : super(key: key);
+class UserAdministrationView extends StatefulWidget {
+  const UserAdministrationView ({Key key}) : super(key: key);
 
   @override
-  State<DashboardView> createState() => _DashboardViewState();
+  State<UserAdministrationView> createState() => _UserAdministrationViewState();
 }
 
-class _DashboardViewState extends State<DashboardView> {
+class _UserAdministrationViewState extends State<UserAdministrationView> {
   final user = FirebaseAuth.instance.currentUser;
 
   //überprüfen ob user eingeloggt ist oder nicht
@@ -47,7 +45,7 @@ class _DashboardViewState extends State<DashboardView> {
 
           ],
         ),
-    ),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Text(
-                  'Gib deine E-Mail Adresse ein. \n Dann senden wir dir einen Link zum zurücksetzen des Passwort ',
+                  'Gib deine E-Mail Adresse ein. \n Dann senden wir dir einen Link zum zurücksetzen des Passworts ',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20),
                 ),
@@ -94,6 +95,49 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       child: Text(
                         "Passwort zurücksetzen",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),)
+                  )
+              ),
+
+              SizedBox(height: 15,),
+
+              Row(
+                children: [
+                  Expanded(
+                      child: Divider(
+                        height: 50,
+                        color: Colors.grey[500],
+                      )
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Du hast dein Passwort bereits zurückgesetzt?'),
+                  ),
+                  Expanded(
+                      child: Divider(
+                        height: 50,
+                        color: Colors.grey[500],
+                      )
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 15,),
+
+              InkWell(
+                  onTap: (){
+                    Navigator.of(context).pushNamed(AuthenticationPageRoute);
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(color: Colors.deepPurple,
+                          borderRadius: BorderRadius.circular(20)),
+                      alignment: Alignment.center,
+                      width: double.maxFinite,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        "Zurück zum Login",
                         style: TextStyle(
                           color: Colors.white,
                         ),)

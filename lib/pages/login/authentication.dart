@@ -17,10 +17,14 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
 
   Future signIn() async{
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim()
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim()
+      );
+    } on FirebaseAuthException catch (e){
+      print(e);
+    }
   }
 
   @override
@@ -69,7 +73,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               Row(
                 children: [
                   Text(
-                    "Welcome back to the login panel",
+                    "Wilkommen zurück zum Login",
                     style: TextStyle(
                     color: Colors.grey,))
                 ],
@@ -95,7 +99,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: "Passwort",
                     hintText: "******",
                     suffixIcon: Icon(Icons.lock_outline, color: Colors.grey,),
                     border: OutlineInputBorder(
@@ -114,9 +118,9 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                         Navigator.of(context).pushNamed(ForgotPasswordRoute);
                         },
                       child: Text(
-                        'Forgot Password',
+                        'Passwort vergessen',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.blue[700],
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -148,8 +152,8 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               SizedBox(height: 15,),
 
               InkWell(
-                onTap: (){
-                  signIn();
+                onTap: () async {
+                  await signIn();
                   Navigator.of(context).pushNamed(DashboardRoute);
                 },
                 child: Container(
