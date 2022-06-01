@@ -4,6 +4,7 @@ import 'package:bestfitnesstrackereu/pages/forgot_password/forgot_password_view.
 import 'package:bestfitnesstrackereu/pages/information/information_view.dart';
 import 'package:bestfitnesstrackereu/pages/login/authentication.dart';
 import 'package:bestfitnesstrackereu/pages/neuigkeiten/neuigkeiten_view.dart';
+import 'package:bestfitnesstrackereu/pages/profile/profile_view.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import '../pages/404/error_page.dart';
@@ -25,6 +26,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(DashboardView(), settings);
     case ForgotPasswordRoute:
       return _getPageRoute(ForgotPasswordView(), settings);
+    case ProfileRoute:
+      return _getPageRoute(ProfileView(), settings);
     default:
       return _getPageRoute(PageNotFound(), settings);
   }

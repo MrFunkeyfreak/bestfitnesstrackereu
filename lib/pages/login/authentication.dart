@@ -154,7 +154,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               InkWell(
                 onTap: () async {
                   await signIn();
-                  Navigator.of(context).pushNamed(DashboardRoute);
+                  Navigator.of(context).pushNamed(ProfileRoute);
                 },
                 child: Container(
                   decoration: BoxDecoration(color: Colors.deepPurple,

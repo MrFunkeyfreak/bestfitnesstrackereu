@@ -12,7 +12,7 @@ class RegistrationView extends StatefulWidget {
 }
 
 class _RegristrationViewState extends State<RegistrationView> {
-  List gender = [ "Männlich", "Weiblch" ];
+  List gender = [ "Männlich", "Weiblich" ];
   String _genderSelected;
   String _birthDateInString;
   DateTime birthDate;

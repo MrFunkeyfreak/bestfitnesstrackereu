@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future addUserDetails(String username, String email, String firstName, String lastName, String birthday, String gender) async{
@@ -12,3 +10,4 @@ Future addUserDetails(String username, String email, String firstName, String la
     'gender': gender,
   });
 }
+
