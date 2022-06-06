@@ -41,6 +41,9 @@ dependencies:
   firebase_auth: ^3.3.19
   firebase_core: ^1.17.1
   cloud_firestore: ^3.1.13
+  shared_preferences: ^2.0.15
+  flutter_spinkit: ^5.1.0
+  responsive_table: ^0.2.0+2
 
 
 dev_dependencies:
