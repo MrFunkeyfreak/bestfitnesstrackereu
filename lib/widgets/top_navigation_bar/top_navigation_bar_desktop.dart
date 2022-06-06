@@ -17,7 +17,7 @@ class TopNavigationBarDesktop extends StatelessWidget {
           SizedBox(width: 30,),
           TopNavBarLogo(),
           SizedBox(width: 30,),
-          Visibility(child: Text( "BestFitnesstrackerEU", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal,))),
+          Visibility(child: Text( "TheBestFitnessTracker", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.normal,))),
 
           Spacer(),      //Space between logo+text and widgets in the center of the row
           TopNavBarItem('Informationen', InformationRoute),
@@ -29,7 +29,7 @@ class TopNavigationBarDesktop extends StatelessWidget {
           SizedBox(width: 40,),
           TopNavBarItem('Login', AuthenticationPageRoute),
           SizedBox(width: 40,),
-          TopNavBarItem('Teilehmer \n werden', RegristrationRoute),
+          TopNavBarItem('Teilehmer \n werden', RegristrationUserRoute),
           SizedBox(width: 40,),
 
         ],

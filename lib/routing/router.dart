@@ -5,10 +5,13 @@ import 'package:bestfitnesstrackereu/pages/information/information_view.dart';
 import 'package:bestfitnesstrackereu/pages/login/authentication.dart';
 import 'package:bestfitnesstrackereu/pages/neuigkeiten/neuigkeiten_view.dart';
 import 'package:bestfitnesstrackereu/pages/profile/profile_view.dart';
+import 'package:bestfitnesstrackereu/pages/registration/registration_admins_view.dart';
+import 'package:bestfitnesstrackereu/pages/registration/registration_scientist_view.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import '../pages/404/error_page.dart';
-import '../pages/registration/regristration_view.dart';
+import '../pages/registration/registration_users_view.dart';
+import '../pages/user_administration/user_administration_view.dart';
 
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -20,14 +23,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(NeuigkeitenView(), settings);
     case AuthenticationPageRoute:
       return _getPageRoute(AuthenticationPage(), settings);
-    case RegristrationRoute:
-      return _getPageRoute(RegistrationView(), settings);
+    case RegristrationUserRoute:
+      return _getPageRoute(RegistrationUsersView(), settings);
+    case RegristrationScientistRoute:
+      return _getPageRoute(RegistrationScientistView(), settings);
+    case RegristrationAdminRoute:
+      return _getPageRoute(RegistrationAdminsView(), settings);
     case DashboardRoute:
       return _getPageRoute(DashboardView(), settings);
     case ForgotPasswordRoute:
       return _getPageRoute(ForgotPasswordView(), settings);
     case ProfileRoute:
       return _getPageRoute(ProfileView(), settings);
+    case UsersAdministrationRoute:
+      return _getPageRoute(UserAdministrationView(), settings);
     default:
       return _getPageRoute(PageNotFound(), settings);
   }

@@ -30,7 +30,7 @@ class TopNavigationBarTablet extends StatelessWidget {
           SizedBox(width: 40,),
           TopNavBarItem('Login', AuthenticationPageRoute),
           SizedBox(width: 20,),
-          TopNavBarItem('Teilehmer \n werden', RegristrationRoute),
+          TopNavBarItem('Teilehmer \n werden', RegristrationUserRoute),
           SizedBox(width: 40,),
 
         ],

@@ -40,7 +40,7 @@ class SideMenuDrawer extends StatelessWidget {
             ),
             TopNavBarItem(
                 'Teilnehmer \n werden',
-                RegristrationRoute,
+                RegristrationUserRoute,
                 icon: IconData(0xe08c, fontFamily: 'MaterialIcons'),
             ),
             SizedBox(height: 30,),

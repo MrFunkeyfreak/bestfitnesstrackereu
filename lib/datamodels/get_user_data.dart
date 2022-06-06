@@ -26,10 +26,10 @@ class GetUserData extends StatelessWidget {
   }
 }
 
-class GetUserDataFromPerson {
+class GetUserDataFromAdmin {
   final String documentId;
 
-  GetUserDataFromPerson({@required this.documentId});
+  GetUserDataFromAdmin({@required this.documentId});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,11 @@ class GetUserDataFromPerson {
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data = snapshot.data.data() as Map<String,dynamic>;
-            return Text('First Name: ${data['first name']} \n Gender: ${data['gender']}' );
+            return Text('Username: ${data['username']} \n E-Mail: ${data['email']} \n '
+                'first name: ${data['first name']} \n last name: ${data['last name']} \n '
+                'birthday: ${data['birthday']} \n Gender: ${data['gender']} \n Status: ${data['status']}' );
+
+              //  'First Name: ${data['first name']} \n Gender: ${data['gender']}' );
           }
           return Text('loading...');
         });

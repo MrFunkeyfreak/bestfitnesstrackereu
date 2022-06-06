@@ -28,7 +28,7 @@ class _DashboardViewState extends State<DashboardView> {
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
                   print('user ist ausgeloggt');
-                  //Navigator.of(context).pushNamed(AuthenticationPageRoute);
+                  Navigator.of(context).pushNamed(AuthenticationPageRoute);
                 },
                 child: Container(
                     decoration: BoxDecoration(color: Colors.deepPurple,

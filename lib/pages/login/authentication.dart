@@ -1,6 +1,10 @@
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/auth.dart';
+import '../../widgets/loading_circle/loading_circle.dart';
 
 class AuthenticationPage extends StatefulWidget {
   const AuthenticationPage({Key key}) : super(key: key);
@@ -37,10 +41,12 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Scaffold(
       body: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 400),
+        child: authProvider.status == Status.Authenticating? Loading() : Container(
+          constraints: BoxConstraints(maxWidth: 440),
           padding: EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +88,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               SizedBox(height: 15,),
 
               TextField(
-                controller: _emailController,
+                controller: authProvider.emailController,
                 decoration: InputDecoration(
                   labelText: "E-Mail",
                   hintText: "abc@domain.com",
@@ -96,7 +102,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               SizedBox(height: 15,),
 
               TextField(
-                controller: _passwordController,
+                controller: authProvider.passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                     labelText: "Passwort",
@@ -143,7 +149,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                               checkBoxValue = value;
                             });
                       }),
-                      Text("Admin/Wissenschaftler",)
+                      Text("Admin",)
                     ],
                   ),
                 ],
@@ -153,8 +159,68 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
               InkWell(
                 onTap: () async {
-                  await signIn();
-                  Navigator.of(context).pushNamed(ProfileRoute);
+
+                  //is admin then check if admin exists with this email
+                  if(checkBoxValue == true && await authProvider.getAdminExistence() == true){
+                    print('admin gibt es!!!!!');
+                    if(!await authProvider.signIn()){      //signIn failed, then return Login failed
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Login failed!"))
+                      );
+                      return;
+                    }
+                    else {
+                      authProvider.clearController(); //if signIn is success, then clear controller
+                      Navigator.of(context).pushNamed(UsersAdministrationRoute);
+                    }
+                  }
+
+                  //no admin with this email exists
+                  if(checkBoxValue == true && await authProvider.getAdminExistence() == false){
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                        title: Text("Error: Es gibt keinen Admin mit dieser E-Mail"),
+                        actions: [
+                          TextButton(
+                            child: Text("Ok"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
+                      );
+                    });
+                  }
+
+                    //if admin not selected, check if scientist exists with this email
+                    if(checkBoxValue == false && await authProvider.getScientistExistence() == true){
+                    print('scientist gibt es!!!!!');
+                    if(!await authProvider.signIn()){      //signIn failed, then return Login failed
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Login failed!"))
+                      );
+                      return;
+                    }
+                    else {
+                      authProvider.clearController(); //if signIn is success, then clear controller
+                      Navigator.of(context).pushNamed(UsersAdministrationRoute);
+                    }
+                  } if(checkBoxValue == false && await authProvider.getScientistExistence() == false) {
+                      showDialog(context: context, builder: (BuildContext context){
+                        return AlertDialog(
+                          title: Text("Error: Es gibt keinen Wissenschaftler mit dieser E-Mail"),
+                          actions: [
+                            TextButton(
+                              child: Text("Ok"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        );
+                      });
+                    }
+
                 },
                 child: Container(
                   decoration: BoxDecoration(color: Colors.deepPurple,
@@ -197,7 +263,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
               InkWell(
                   onTap: (){
-                    Navigator.of(context).pushNamed(RegristrationRoute);
+                    Navigator.of(context).pushNamed(RegristrationUserRoute);
                   },
                   child: Container(
                       decoration: BoxDecoration(color: Colors.deepPurple,
