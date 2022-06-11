@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../widgets/page_content_details/informations_content_details.dart';
+import '../../widgets/page_content_details/neuigkeiten_content_details.dart';
 
 
-class InformationContentMobile extends StatelessWidget {
-  const InformationContentMobile({Key key}) : super(key: key);
+class NeuigkeitenContentMobile extends StatelessWidget {
+  const NeuigkeitenContentMobile({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class InformationContentMobile extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        InformationContentDetails(),
+        NeuigkeitenContentDetails(),
         SizedBox(
           height: 100,
         ),

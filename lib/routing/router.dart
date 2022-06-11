@@ -10,6 +10,7 @@ import 'package:bestfitnesstrackereu/pages/registration/registration_scientist_v
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import '../pages/404/error_page.dart';
+import '../pages/layout_template/layout_template.dart';
 import '../pages/registration/registration_users_view.dart';
 import '../pages/user_administration/user_administration_view.dart';
 
@@ -18,27 +19,27 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   var routingData = settings.name.getRoutingData; // Get the routing Data
   switch (routingData.route) {
     case InformationRoute:
-      return _getPageRoute(InformationView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: InformationView()), settings);
     case NeuigkeitenRoute:
-      return _getPageRoute(NeuigkeitenView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: NeuigkeitenView()), settings);
     case AuthenticationPageRoute:
-      return _getPageRoute(AuthenticationPage(), settings);
+      return _getPageRoute(LayoutTemplate(child1: AuthenticationPage()), settings);
     case RegristrationUserRoute:
-      return _getPageRoute(RegistrationUsersView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: RegistrationUsersView()), settings);
     case RegristrationScientistRoute:
-      return _getPageRoute(RegistrationScientistView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: RegistrationScientistView()), settings);
     case RegristrationAdminRoute:
-      return _getPageRoute(RegistrationAdminsView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: RegistrationAdminsView()), settings);
     case DashboardRoute:
-      return _getPageRoute(DashboardView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: DashboardView()), settings);
     case ForgotPasswordRoute:
-      return _getPageRoute(ForgotPasswordView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: ForgotPasswordView()), settings);
     case ProfileRoute:
-      return _getPageRoute(ProfileView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: ProfileView()), settings);
     case UsersAdministrationRoute:
-      return _getPageRoute(UserAdministrationView(), settings);
+      return _getPageRoute(LayoutTemplate(child1: UserAdministrationView()), settings);
     default:
-      return _getPageRoute(PageNotFound(), settings);
+      return _getPageRoute(LayoutTemplate(child1: PageNotFound()), settings);
   }
 }
 

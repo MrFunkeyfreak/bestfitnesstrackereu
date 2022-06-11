@@ -267,7 +267,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
 
                           await authProvider.signUp(_birthDateInString, _genderSelected);
                           authProvider.clearController();
-                          Navigator.of(context).pushNamed(DashboardRoute);
+                          Navigator.of(context).pushNamed(InformationRoute);
                         }
                         else {      //signIn failed, then return Login failed
                           showDialog(context: context, builder: (BuildContext context){

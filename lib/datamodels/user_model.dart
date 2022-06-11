@@ -27,7 +27,7 @@ class UserModel {
   String get lastName => _lastName;
   String get birthday => _birthday;
   String get gender => _gender;
-  String get stats => _status;
+  String get status => _status;
 
 
   UserModel.fromSnapshot(DocumentSnapshot snapshot) {

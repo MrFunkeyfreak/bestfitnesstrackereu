@@ -71,6 +71,12 @@ class UsersTable with ChangeNotifier {
         show: true,
         sortable: true,
         textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Status",
+        value: "status",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
   ];
 
   UserServices _userServices = UserServices();
@@ -89,12 +95,13 @@ class UsersTable with ChangeNotifier {
     for (UserModel userData in _users) {
       temps.add({
         "uid": userData.uid,
-        "username": userData.username ,
-        "email": userData.email ,
-        "first name": userData.firstName ,
-        "last name": userData.lastName ,
-        "birthday": userData.birthday ,
-        "gender": userData.gender ,
+        "username": userData.username,
+        "email": userData.email,
+        "first name": userData.firstName,
+        "last name": userData.lastName,
+        "birthday": userData.birthday,
+        "gender": userData.gender,
+        "status": userData.status,
       });
       i++;
     }
@@ -130,7 +137,6 @@ class UsersTable with ChangeNotifier {
     usersTableSource = sourceFiltered.getRange(start, start + _expandedLen).toList();
     isLoading = false;
     notifyListeners();
-    //hier future weggemacht
   }
 
   filterData(value) {
@@ -186,11 +192,22 @@ class UsersTable with ChangeNotifier {
   onSelected(bool value, Map <String, dynamic> item){
     print("$value  $item ");
     if (value) {
-      selecteds.add(item);
+      selecteds.add(item);     //Liste von Map <String, dynamic>
     } else {
       selecteds.removeAt(selecteds.indexOf(item));
     }
     notifyListeners();
+  }
+
+  getSelected(bool value, Map <String, dynamic> item){
+    print("$value  $item ");
+    if (value) {
+      selecteds.add(item);     //Liste von Map <String, dynamic>
+    } else {
+      selecteds.removeAt(selecteds.indexOf(item));
+    }
+    notifyListeners();
+    return selecteds;
   }
 
   onSelectAll(bool value){

@@ -19,7 +19,10 @@ class UsersAdministrationViewDesktop extends StatefulWidget {
 class _UsersAdministrationViewDesktopState extends State<UsersAdministrationViewDesktop> {
 
   final user = FirebaseAuth.instance.currentUser;  //check if user is logged in
-  String uid = ('M0glOQKUwagZJGOyzVEU1JJgQo23');
+  String uid;
+  List<Map<String, dynamic>> selectedRow;
+  AuthProvider authproviderInstance = AuthProvider();
+
 
 
   @override
@@ -29,19 +32,20 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
 
   @override
   Widget build(BuildContext context) {
-    final UsersTable testTable = Provider.of<UsersTable>(context);
+    final UsersTable userTable = Provider.of<UsersTable>(context);
 
     return Scaffold(
       appBar: AppBar(
           title: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Spacer(),
-                Text("Userverwaltung"),
+                Text("Admin-Menü", style: TextStyle(color: Colors.white)),
+                SizedBox(width: 300,),
+                Text("Benutzerverwaltung"),
                 Spacer(),
                 IconButton(icon: Icon(Icons.refresh_sharp),
-                  onPressed: testTable.initializeData,
+                  onPressed: userTable.initializeData,
                 ),
               ]
           )
@@ -50,14 +54,32 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
         child: ListView(
           children: [
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Userverwaltung"),
-              onTap: () {},
+              leading: Icon(Icons.storage),
+              title: Text("Benutzerverwaltung"),
+              onTap: () {
+                Navigator.of(context).pushNamed(UsersAdministrationRoute);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.storage),
+              title: Text("Wissenschaftlerverwaltung"),
+              onTap: () {
+                Navigator.of(context).pushNamed(UsersAdministrationRoute);
+              },
             ),
             ListTile(
               leading: Icon(Icons.storage),
               title: Text("Adminverwaltung"),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed(UsersAdministrationRoute);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Dashboard"),
+              onTap: () {
+                Navigator.of(context).pushNamed(DashboardRoute);
+              },
             )
           ],
         ),
@@ -107,14 +129,53 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                               SizedBox(width: 15,),
 
                               //edit-button + functionality
+
                               EditButtonAdmin(),
 
                               SizedBox(width: 15,),
 
                               TextButton.icon(
                                 onPressed: () async => {
-                                  await AuthProvider.deleteUser(uid),
-                                  print(uid + 'user gelöscht')
+                                  selectedRow = userTable.selecteds,
+                                  if(selectedRow.isEmpty){
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return AlertDialog(
+                                        title: Text("Error: Bitte wähle einen User aus."),
+                                        actions: [
+                                          TextButton(
+                                            child: Text("Ok"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    })
+                                  },
+
+                                  if(selectedRow.length == 1){
+                                    uid = selectedRow[0]['uid'],
+                                    await AuthProvider.deleteUser(uid),
+                                    print(uid + 'user gelöscht')
+                                  },
+
+                                  if(selectedRow.length >= 2) {
+                                    //die uid von allen in der Liste durchgehen und rolle ändern
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return AlertDialog(
+                                        title: Text("Error: Bitte wähle genau einen User aus."),
+                                        actions: [
+                                          TextButton(
+                                            child: Text("Ok"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    })
+                                  }
+
                                 },
                                 icon: Icon(
                                   IconData(0xe1bb, fontFamily: 'MaterialIcons'),
@@ -140,7 +201,41 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                           Wrap (
                             children: [
                               TextButton.icon(
-                                onPressed: () => {},
+                                onPressed: () async => {
+                                  selectedRow = userTable.selecteds,
+
+                                  if(selectedRow.isEmpty){
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return AlertDialog(
+                                        title: Text("Error: Bitte wähle einen User aus."),
+                                        actions: [
+                                          TextButton(
+                                            child: Text("Ok"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    })
+                                  },
+
+                                  if(selectedRow.length == 1){
+                                    uid = selectedRow[0]['uid'],
+                                    await authproviderInstance.updateUserStatus(uid, 'gesperrt'),
+                                  },
+
+                                  if(selectedRow.length >= 2) {
+                                    //die uid von allen in der Liste durchgehen und rolle ändern
+
+                                    for (var i=0; i<selectedRow.length;i++){ //für alle uids in der Liste
+                                      await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gesperrt'),
+                                    },
+                                  },
+                                  userTable.selecteds.clear(),
+                                  userTable.initializeData(),
+
+                                },
                                 icon: Icon(
                                   IconData(0xe3b1, fontFamily: 'MaterialIcons'),
                                   color: Colors.black,
@@ -161,7 +256,38 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                               SizedBox(width: 15,),
 
                               TextButton.icon(
-                                onPressed: () => {},
+                                onPressed: () async => {
+
+                                  selectedRow = userTable.selecteds,
+                                  if(selectedRow.isEmpty){
+                                    showDialog(context: context, builder: (BuildContext context){
+                                      return AlertDialog(
+                                        title: Text("Error: Bitte wähle einen User aus."),
+                                        actions: [
+                                          TextButton(
+                                            child: Text("Ok"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      );
+                                    })
+                                  },
+                                  if(selectedRow.length == 1){
+                                    uid = selectedRow[0]['uid'],
+                                    await authproviderInstance.updateUserStatus(uid, 'aktiv'),
+                                  },
+                                  if(selectedRow.length >= 2) {
+
+                                    for (var i=0; i<selectedRow.length;i++){
+                                      await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'aktiv'),
+                                    },
+                                  },
+                                  userTable.selecteds.clear(),
+                                  userTable.initializeData(),
+
+                                },
                                 icon: Icon(
                                   IconData(0xe3b0, fontFamily: 'MaterialIcons'),
                                   color: Colors.black,
@@ -188,41 +314,41 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
 
                       reponseScreenSizes: [ScreenSize.xs],
                       actions: [
-                        if (testTable.isSearch)
+                        if (userTable.isSearch)
                           Expanded(
                               child: TextField(
                                 decoration: InputDecoration(
                                     hintText: 'Enter search term based on ' +
-                                        testTable.searchKey
+                                        userTable.searchKey
                                             .replaceAll(new RegExp('[\\W_]+'), ' ')
                                             .toUpperCase(),
                                     prefixIcon: IconButton(
                                         icon: Icon(Icons.cancel),
                                         onPressed: () {
                                           setState(() {
-                                            testTable.isSearch = false;
+                                            userTable.isSearch = false;
                                           });
-                                          testTable.initializeData();
+                                          userTable.initializeData();
                                         }),
                                     suffixIcon: IconButton(
                                         icon: Icon(Icons.search), onPressed: () {})),
                                 onSubmitted: (value) {
-                                  testTable.filterData(value);
+                                  userTable.filterData(value);
                                 },
                               )),
-                        if (!testTable.isSearch)
+                        if (!userTable.isSearch)
                           IconButton(
                               icon: Icon(Icons.search),
                               onPressed: () {
                                 setState(() {
-                                  testTable.isSearch = true;
+                                  userTable.isSearch = true;
                                 });
                               })
                       ],
-                      headers: testTable.headers,
-                      source: testTable.usersTableSource,
-                      selecteds: testTable.selecteds,
-                      showSelect: testTable.showSelect,
+                      headers: userTable.headers,
+                      source: userTable.usersTableSource,
+                      selecteds: userTable.selecteds,
+                      showSelect: userTable.showSelect,
                       autoHeight: false,
                       dropContainer: (data) {
                         if (int.tryParse(data['id'].toString()).isEven) {
@@ -241,49 +367,49 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                       onTabRow: (data) {
                         print(data);
                       },
-                      onSort: testTable.onSort,
-                      expanded: testTable.expanded,
-                      sortAscending: testTable.sortAscending,
-                      sortColumn: testTable.sortColumn,
-                      isLoading: testTable.isLoading,
-                      onSelect: testTable.onSelected,
-                      onSelectAll: testTable.onSelectAll,
+                      onSort: userTable.onSort,
+                      expanded: userTable.expanded,
+                      sortAscending: userTable.sortAscending,
+                      sortColumn: userTable.sortColumn,
+                      isLoading: userTable.isLoading,
+                      onSelect: userTable.onSelected,
+                      onSelectAll: userTable.onSelectAll,
                       footers: [
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: Text("Rows per page:"),
                         ),
-                        if (testTable.perPages.isNotEmpty)
+                        if (userTable.perPages.isNotEmpty)
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 15),
                             child: DropdownButton<int>(
-                              value: testTable.currentPerPage,
-                              items: testTable.perPages
+                              value: userTable.currentPerPage,
+                              items: userTable.perPages
                                   .map((e) => DropdownMenuItem<int>(
                                 child: Text("$e"),
                                 value: e,
                               ))
                                   .toList(),
-                              onChanged: testTable.onChanged,
+                              onChanged: userTable.onChanged,
                               isExpanded: false,
                             ),
                           ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child:
-                          Text("${testTable.currentPage} - ${testTable.currentPerPage} of ${testTable.total}"),
+                          Text("${userTable.currentPage} - ${userTable.currentPerPage} of ${userTable.total}"),
                         ),
                         IconButton(
                           icon: Icon(
                             Icons.arrow_back_ios,
                             size: 16,
                           ),
-                          onPressed: testTable.previous,
+                          onPressed: userTable.previous,
                           padding: EdgeInsets.symmetric(horizontal: 15),
                         ),
                         IconButton(
                           icon: Icon(Icons.arrow_forward_ios, size: 16),
-                          onPressed: testTable.next,
+                          onPressed: userTable.next,
                           padding: EdgeInsets.symmetric(horizontal: 15),
                         )
                       ],

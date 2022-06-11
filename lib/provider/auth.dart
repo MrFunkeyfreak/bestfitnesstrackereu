@@ -9,7 +9,11 @@ import '../services/user_services.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
+
 class AuthProvider with ChangeNotifier {
+
+  AuthProvider({Key key});
+
   User _user;
   Status _status = Status.Uninitialized;
   UserServices _userServices = UserServices();
@@ -68,12 +72,24 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future <void> updateUser(String id, String role, String birthday, String gender)async{
+   Future <void> updateUser(String id,String birthday, String gender, String role, )async{
+    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
     return await FirebaseFirestore.instance
         .collection('admins')
         .doc(id)
-        .update({'username': usernameController, 'email': emailController, 'first name': firstNameController, 'last name': lastNameController, 'birthday': birthday, 'gender': gender, 'role': role,})
+        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
+         'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
+         'birthday': birthday, 'gender': gender, 'role': role,})
         .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future <void> updateUserStatus(String id, String status )async{
+    return await FirebaseFirestore.instance
+        .collection('admins')
+        .doc(id)
+        .update({'status': status})
+        .then((value) => print("User status Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
 

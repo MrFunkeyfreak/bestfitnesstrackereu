@@ -1,7 +1,10 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../provider/auth.dart';
+import '../../../provider/users_table.dart';
 import '../../registration/widgets/radiobuttons.dart';
 
 class EditButtonAdmin extends StatefulWidget {
@@ -15,39 +18,62 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
   String genderSelected;
   String roleSelected;
 
+
+  AuthProvider authproviderInstance = AuthProvider();
+  List<Map<String,dynamic>> selectedRows;
+  String selectedUid;
+
   String _birthDateInString;
   DateTime birthDate;
   bool isDateSelected= false;
 
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController username = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController passwordConfirmed = TextEditingController();
-  TextEditingController firstName = TextEditingController();
-  TextEditingController lastName = TextEditingController();
-  TextEditingController role = TextEditingController();
-
-
   @override
   void dispose() {
-    username.dispose();
-    email.dispose();
-    password.dispose();
-    passwordConfirmed.dispose();
-    firstName.dispose();
-    lastName.dispose();
-    role.dispose();
     super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
+    final UsersTable userTable = Provider.of<UsersTable>(context);
+
     return TextButton.icon(
       onPressed: () =>
-      {
+      { selectedRows = userTable.selecteds,
+        if(selectedRows.length == 1) {
+
+          authproviderInstance.usernameController.value = TextEditingValue(
+              text: selectedRows[0]['username'],
+              selection: TextSelection.fromPosition(
+                  TextPosition(offset: selectedRows[0]['username'].length)
+              )
+          ),
+
+          authproviderInstance.emailController.value = TextEditingValue(
+            text: selectedRows[0]['email'],
+            selection: TextSelection.fromPosition(
+                TextPosition(offset: selectedRows[0]['username'].length)
+            )
+        ),
+
+          authproviderInstance.firstNameController.value = TextEditingValue(
+            text: selectedRows[0]['first name'],
+            selection: TextSelection.fromPosition(
+                TextPosition(offset: selectedRows[0]['username'].length)
+            )
+        ),
+
+          authproviderInstance.lastNameController.value = TextEditingValue(
+            text: selectedRows[0]['last name'],
+            selection: TextSelection.fromPosition(
+                TextPosition(offset: selectedRows[0]['username'].length)
+            )
+        ),
+
+        genderSelected = selectedRows[0]['gender'],
+
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -92,7 +118,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    controller: username,
+                                    controller: authproviderInstance.usernameController,
                                     decoration: InputDecoration(
                                         labelText: "Benutzername",
                                         hintText: "Max123",
@@ -103,10 +129,11 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                     ),
                                   ),
                                 ),
+
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    controller: email,
+                                    controller: authproviderInstance.emailController,
                                     decoration: InputDecoration(
                                         labelText: "E-Mail",
                                         hintText: "abc@domain.com",
@@ -119,7 +146,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    controller: firstName,
+                                    controller: authproviderInstance.firstNameController,
                                     decoration: InputDecoration(
                                         labelText: "Vorname",
                                         hintText: "Max",
@@ -133,7 +160,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: TextFormField(
-                                    controller: lastName,
+                                    controller: authproviderInstance.lastNameController,
                                     decoration: InputDecoration(
                                         labelText: "Nachname",
                                         hintText: "Mustermann",
@@ -167,6 +194,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                         size: 30,),
                                       onTap: () async {
                                         final DateTime datePick = await showDatePicker(
+                                          locale: const Locale('de'),
                                           context: context,
                                           initialDate: new DateTime
                                               .now(),
@@ -174,8 +202,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                               1900),
                                           lastDate: new DateTime(
                                               2100),
-                                          initialEntryMode: DatePickerEntryMode
-                                              .input,
+                                          initialEntryMode: DatePickerEntryMode.input,
                                           errorFormatText: 'Enter valid date',
                                           errorInvalidText: 'Enter date in valid range',
                                           fieldLabelText: 'Birthdate',
@@ -190,8 +217,8 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                             // birthdate in string
                                             _birthDateInString =
                                             "${birthDate
-                                                .month}/${birthDate
                                                 .day}/${birthDate
+                                                .month}/${birthDate
                                                 .year}";
                                             print('' +
                                                 _birthDateInString);
@@ -275,16 +302,20 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                       8.0),
                                   child: ElevatedButton(
                                     child: Text("Bearbeiten"),
-                                    onPressed: () {
-                                      if (_formKey.currentState
-                                          .validate()) {
+                                    onPressed: () async {
+                                      selectedRows = userTable.selecteds;
+
+                                      if (_formKey.currentState.validate()) {
                                         //alle infos von den controllern holen und alles updaten.
-  
+                                        selectedUid = selectedRows[0]['uid'];
 
+                                        await authproviderInstance.updateUser(selectedUid,
+                                            _birthDateInString,genderSelected, roleSelected);
 
-                                        _formKey.currentState
-                                            .save();
+                                        _formKey.currentState.save();
                                         Navigator.of(context).pop();
+                                        userTable.selecteds.clear();
+                                        userTable.initializeData();
                                       }
                                     },
                                   ),
@@ -297,6 +328,21 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                     );
                   });
             })
+      } else {
+          showDialog(context: context, builder: (BuildContext context){
+            return AlertDialog(
+              title: Text("Error: Bitte wähle genau einen User aus."),
+              actions: [
+                TextButton(
+                  child: Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          }),
+        }
       },
       icon: Icon(
         IconData(0xf00d, fontFamily: 'MaterialIcons'),

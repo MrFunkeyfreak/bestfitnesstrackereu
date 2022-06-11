@@ -10,22 +10,22 @@ const String ProfileRoute = "/profile";
 const String UsersAdministrationRoute = "/userverwaltung";
 
 
-class MenuItem{
+class MenuItemRoutes{
   final String name;
   final String route;
 
-  MenuItem(this.name, this.route);
+  MenuItemRoutes(this.name, this.route);
 }
 
-List <MenuItem> sideMenuItems = [
-  MenuItem('Information', InformationRoute),
-  MenuItem('Episodes', NeuigkeitenRoute),
-  MenuItem('Login', AuthenticationPageRoute),
-  MenuItem('Registrieren', RegristrationUserRoute),
-  MenuItem('Wissenschaftler-Registrieren', RegristrationScientistRoute),
-  MenuItem('Admin-Registrieren', RegristrationAdminRoute),
-  MenuItem('Dashboard', DashboardRoute),
-  MenuItem('Passwort vergessen', ForgotPasswordRoute),
-  MenuItem('Profile', ProfileRoute),
-  MenuItem('Userverwaltung', UsersAdministrationRoute),
+List <MenuItemRoutes> sideMenuItems = [
+  MenuItemRoutes('Information', InformationRoute),
+  MenuItemRoutes('Neuigkeiten', NeuigkeitenRoute),
+  MenuItemRoutes('Login', AuthenticationPageRoute),
+  MenuItemRoutes('Registrieren', RegristrationUserRoute),
+  MenuItemRoutes('Wissenschaftler-Registrieren', RegristrationScientistRoute),
+  MenuItemRoutes('Admin-Registrieren', RegristrationAdminRoute),
+  MenuItemRoutes('Dashboard', DashboardRoute),
+  MenuItemRoutes('Passwort vergessen', ForgotPasswordRoute),
+  MenuItemRoutes('Profile', ProfileRoute),
+  MenuItemRoutes('Userverwaltung', UsersAdministrationRoute),
 ];
