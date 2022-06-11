@@ -350,12 +350,6 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                       selecteds: userTable.selecteds,
                       showSelect: userTable.showSelect,
                       autoHeight: false,
-                      dropContainer: (data) {
-                        if (int.tryParse(data['id'].toString()).isEven) {
-                          return Text("is Even");
-                        }
-                        return _DropDownContainer(data: data);
-                      },
                       onChangedRow: (value, header) {
                         /// print(value);
                         /// print(header);

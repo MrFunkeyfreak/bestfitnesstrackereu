@@ -11,7 +11,7 @@ class TopNavBarItemTabletDesktop extends StatelessWidget {
       ) {
     return Text(
       model.title,
-      style: TextStyle(fontSize: 16),
+      style: TextStyle(fontSize: 14),
     );
   }
 }
