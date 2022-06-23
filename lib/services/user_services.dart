@@ -5,7 +5,7 @@ class UserServices {
   String adminsCollection = "admins";
   String usersCollection = "users";
 
-  void createAdmin({
+  void createUser({
     String uid,
     String username,
     String email,
@@ -14,9 +14,10 @@ class UserServices {
     String birthday,
     String gender,
     String status,
+    String role,
 
   }) {
-    FirebaseFirestore.instance.collection(adminsCollection).doc(uid).set({
+    FirebaseFirestore.instance.collection(usersCollection).doc(uid).set({
       'uid': uid,
       'username': username,
       'email': email,
@@ -25,23 +26,24 @@ class UserServices {
       'birthday': birthday,
       'gender': gender,
       'status': status,
+      'role': role,
     });
   }
 
   void updateUserData(Map<String, dynamic> values) {  //update the values from the person, who has the specific id
     FirebaseFirestore.instance
-        .collection(adminsCollection)
+        .collection(usersCollection)
         .doc(values['id'])
         .update(values);
   }
 
-  Future<UserModel> getAdminById(String id) =>  //get the current admin logged in
-      FirebaseFirestore.instance.collection(adminsCollection).doc(id).get().then((doc) {
+  Future<UserModel> getUserById(String id) =>  //get the current user logged in
+      FirebaseFirestore.instance.collection(usersCollection).doc(id).get().then((doc) {
         return UserModel.fromSnapshot(doc);
       });
 
   Future<List<UserModel>> getAllUsers() async =>
-      FirebaseFirestore.instance.collection(adminsCollection).get().then((result) {
+      FirebaseFirestore.instance.collection(usersCollection).get().then((result) {
         List<UserModel> users = [];
         for (DocumentSnapshot user in result.docs) {
           users.add(UserModel.fromSnapshot(user));

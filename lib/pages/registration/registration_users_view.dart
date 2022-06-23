@@ -1,5 +1,6 @@
 import 'package:bestfitnesstrackereu/pages/registration/widgets/radiobuttons.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/auth.dart';
@@ -21,29 +22,11 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
   DateTime birthDate;
   bool isDateSelected= false;
 
+  Map<String, dynamic> mapUserinformations = {};
+
   @override
   void dispose() {
     super.dispose();
-  }
-
-  Row addRadioButton(int btnValue, String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Radio(
-          activeColor: Theme.of(context).primaryColor,
-          value: gender[btnValue],
-          groupValue: _genderSelected,
-          onChanged: (value){
-            setState(() {
-              print(value);
-              _genderSelected=value;
-            });
-          },
-        ),
-        Text(title)
-      ],
-    );
   }
 
   @override
@@ -52,7 +35,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
 
     return Scaffold(
       body: Center(
-          child: authProvider.status == Status.Authenticating? Loading() : Container(
+          child: authProvider.status == Status.Authenticating ? Loading() : Container(
             constraints: BoxConstraints(maxWidth: 440),
             padding: EdgeInsets.all(24),
             child: Column(
@@ -175,7 +158,6 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                 SizedBox(height: 15,),
 
                 Row(
-                  //mainAxisAlignment: MainAxisAlignment.center,
                   children: [
 
                     SizedBox(width: 11,),
@@ -206,7 +188,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                             isDateSelected=true;
 
                             // birthdate in string
-                            _birthDateInString = "${birthDate.month}/${birthDate.day}/${birthDate.year}";
+                            _birthDateInString = "${birthDate.day}/${birthDate.month}/${birthDate.year}";
                             print(''+ _birthDateInString);
 
                           });
@@ -249,14 +231,118 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
 
                 InkWell(
                     onTap: () async {
+
+                      //exception handling -> email format, felder dürfen nicht leer sein,
+                      //gucken ob status gelöscht ist -> wenn ja, dann upgrade userdaten
+
+
                       print('pw confirmed:' + authProvider.passwordConfirmedController.text.trim());
                       print('pw:' + authProvider.passwordController.text.trim());
 
+
+                      //password and passworconfirm check
                       if(authProvider.passwordConfirmedController.text.trim() == authProvider.passwordController.text.trim()) {
+
+                        //checking that all textfields are not empty
                         if (authProvider.usernameController.text.trim() != null && authProvider.emailController.text.trim() != null
                             && authProvider.passwordController.text.trim() != null && authProvider.passwordConfirmedController.text.trim() != null
                             && authProvider.firstNameController.text.trim() != null && authProvider.lastNameController.text.trim() != null
-                            && _birthDateInString != null && _genderSelected != null ) {    //if signIn is success, then signUp + clear controller
+                            && _birthDateInString != null && _genderSelected != null ) {
+
+
+                          print('test');
+                          mapUserinformations = await authProvider.getUserByEmail();
+
+                          //wenn email exist, then check status
+                          if (mapUserinformations != null){
+                            print('email is already existing');
+                            if(mapUserinformations['status'] == 'gelöscht'){
+                              print('email is deleted');
+                              //recreate the deleted user
+                              try{
+                                //update user informations
+                                await authProvider.updateUserSignup(mapUserinformations['uid'], _birthDateInString, _genderSelected, 'User');
+
+                                //send password reset link
+                                try {
+                                  await FirebaseAuth.instance.sendPasswordResetEmail(
+                                      email: authProvider.emailController.text.trim());
+                                } on FirebaseAuthException catch (e){
+                                  print(e);
+                                  showDialog(
+                                      context: context,builder: (context){
+                                    return AlertDialog(
+                                      content: Text(e.message.toString()),
+                                    );
+                                  });
+                                }
+
+                                authProvider.clearController();
+
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return AlertDialog(
+                                    title: Text(
+                                        "Registration abgeschlossen.\nDein Account war gelöscht, daher wurde dir eine E-Mail zum zurücksetzen deines persönlichen Passworts zugesendet.\nNachdem du das Passwort abgeändert hast, kannst du "
+                                        "dich nun in unserer App einloggen.",
+                                        textAlign: TextAlign.center),
+                                    actions: [
+                                      TextButton(
+                                        child: Text("Ok"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  );
+                                });
+                              }
+                              catch(e) {
+                                print(e);
+                              }
+                            }
+                            else{
+                              showDialog(context: context, builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Error: Es existiert schon ein Account mit dieser E-Mail Adresse."),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                            }
+                          }
+                          else{
+                            try{
+                              print('email existiert noch nicht');
+                              await authProvider.signUpUser(_birthDateInString, _genderSelected);
+                              authProvider.clearController();
+
+                              showDialog(context: context, builder: (BuildContext context){
+                                return AlertDialog(
+                                  title: Text("Registration abgeschlossen. Du kannst dich nun in unserer App einloggen."),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                );
+                              });
+                            }
+                            catch(e) {
+                              print(e);
+                            }
+                          }
+
+
+                          //if signIn is success, then signUp + clear controller
 
                           /*if(authProvider.validateEmail(authProvider.email.text.trim()) == null){
                             print('validate email okok');
@@ -265,9 +351,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                             print('validate email notgoodatall');
                           }             -> email checken, dass es bestimmtes format einhält */
 
-                          await authProvider.signUp(_birthDateInString, _genderSelected);
-                          authProvider.clearController();
-                          Navigator.of(context).pushNamed(InformationRoute);
+
                         }
                         else {      //signIn failed, then return Login failed
                           showDialog(context: context, builder: (BuildContext context){
@@ -285,7 +369,6 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                           });
                           return;
                         }
-
 
                       } else {
                         showDialog(context: context, builder: (BuildContext context){
@@ -345,6 +428,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
 
                 InkWell(
                     onTap: (){
+                      authProvider.clearController();
                       Navigator.of(context).pushNamed(AuthenticationPageRoute);
                     },
                     child: Container(

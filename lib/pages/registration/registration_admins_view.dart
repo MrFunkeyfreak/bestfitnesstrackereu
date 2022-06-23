@@ -279,7 +279,7 @@ class _RegristrationViewState extends State<RegistrationAdminsView> {
                             print('validate email notgoodatall');
                           }             -> email checken, dass es bestimmtes format einhält */
 
-                          await authProvider.signUp(_birthDateInString, _genderSelected);
+                          await authProvider.signUpUser(_birthDateInString, _genderSelected);
                           authProvider.clearController();
                           Navigator.of(context).pushNamed(DashboardRoute);
                         }

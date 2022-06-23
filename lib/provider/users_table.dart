@@ -77,6 +77,12 @@ class UsersTable with ChangeNotifier {
         show: true,
         sortable: true,
         textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Rolle",
+        value: "role",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
   ];
 
   UserServices _userServices = UserServices();
@@ -91,7 +97,6 @@ class UsersTable with ChangeNotifier {
     List<Map<String, dynamic>> temps = [];
     var i = _users.length;
     print("Users:" + i.toString());
-    // ignore: unused_local_variable
     for (UserModel userData in _users) {
       temps.add({
         "uid": userData.uid,
@@ -102,6 +107,7 @@ class UsersTable with ChangeNotifier {
         "birthday": userData.birthday,
         "gender": userData.gender,
         "status": userData.status,
+        'role': userData.role,
       });
       i++;
     }

@@ -1,4 +1,6 @@
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_admin.dart';
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_admin.dart';
+import 'package:bestfitnesstrackereu/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,8 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
   String uid;
   List<Map<String, dynamic>> selectedRow;
   AuthProvider authproviderInstance = AuthProvider();
+  UserServices userServicesInstance = UserServices();
+  Map<String, dynamic> UpdateUser;
 
 
 
@@ -74,13 +78,6 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                 Navigator.of(context).pushNamed(UsersAdministrationRoute);
               },
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Dashboard"),
-              onTap: () {
-                Navigator.of(context).pushNamed(DashboardRoute);
-              },
-            )
           ],
         ),
       ),
@@ -106,30 +103,12 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                           Wrap(
                             children: <Widget>[
 
-                              //add user to the list
-                              TextButton.icon(
-                                onPressed: () => {
-                                  Navigator.of(context).pushNamed(RegristrationAdminRoute)
-                                  //Pop-up Fenster für die Registration machen, wenn Zeit - ansonsten registrationsfenster weiterleiten
-                                },
-                                icon: Icon(Icons.add, color: Colors.black,),
-                                label: Text("Hinzufügen",
-                                    style: TextStyle(
-                                        color: Colors.black
-                                    )
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.grey),
-                                  padding: MaterialStateProperty.all<EdgeInsets>(
-                                      EdgeInsets.all(10)),
-                                ),
-                              ),
+                              //add-button + functionality
+                              AddButtonAdmin(),
 
                               SizedBox(width: 15,),
 
                               //edit-button + functionality
-
                               EditButtonAdmin(),
 
                               SizedBox(width: 15,),
@@ -154,28 +133,25 @@ class _UsersAdministrationViewDesktopState extends State<UsersAdministrationView
                                   },
 
                                   if(selectedRow.length == 1){
+
                                     uid = selectedRow[0]['uid'],
-                                    await AuthProvider.deleteUser(uid),
-                                    print(uid + 'user gelöscht')
+                                    UpdateUser= {'id':uid, 'username': '', 'first name': '', 'last name': '', 'birthday': '', 'gender': '',
+                                                  'status': 'gelöscht', 'role': 'User'},
+                                    userServicesInstance.updateUserData(UpdateUser),
+                                    print(uid + 'user gelöscht'),
+
+                                    userTable.selecteds.clear(),
+                                    userTable.initializeData(),
                                   },
 
                                   if(selectedRow.length >= 2) {
                                     //die uid von allen in der Liste durchgehen und rolle ändern
-                                    showDialog(context: context, builder: (BuildContext context){
-                                      return AlertDialog(
-                                        title: Text("Error: Bitte wähle genau einen User aus."),
-                                        actions: [
-                                          TextButton(
-                                            child: Text("Ok"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    })
-                                  }
-
+                                    for (var i=0; i<selectedRow.length;i++){ //für alle uids in der Liste
+                                      await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gelöscht'),
+                                    },
+                                  },
+                                  userTable.selecteds.clear(),
+                                  userTable.initializeData(),
                                 },
                                 icon: Icon(
                                   IconData(0xe1bb, fontFamily: 'MaterialIcons'),

@@ -72,7 +72,11 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
             )
         ),
 
-        genderSelected = selectedRows[0]['gender'],
+          genderSelected = selectedRows[0]['gender'],
+
+          roleSelected = selectedRows[0]['role'],
+
+
 
         showDialog(
             context: context,
@@ -245,8 +249,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
 
 
                                     RadioButtonGender(
-                                        0, 'Männlich', genderSelected, (
-                                        newValue) {
+                                        0, 'Männlich', genderSelected, (newValue) {
                                       print(newValue);
                                       setState(() =>
                                       genderSelected = newValue);
@@ -281,8 +284,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                       roleSelected = newValue);
                                     }),
                                     RadioButtonRole(
-                                        1, 'Wissenschaftler', roleSelected, (
-                                        newValue) {
+                                        1, 'Wissenschaftler', roleSelected, (newValue) {
                                       print(newValue);
                                       setState(() =>
                                       roleSelected = newValue);
@@ -309,7 +311,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                         //alle infos von den controllern holen und alles updaten.
                                         selectedUid = selectedRows[0]['uid'];
 
-                                        await authproviderInstance.updateUser(selectedUid,
+                                        await authproviderInstance.updateUserEdit(selectedUid,
                                             _birthDateInString,genderSelected, roleSelected);
 
                                         _formKey.currentState.save();

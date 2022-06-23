@@ -1,3 +1,5 @@
+import 'package:bestfitnesstrackereu/provider/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/page_content_details/informations_content_details.dart';
 
@@ -6,6 +8,8 @@ class InformationContentDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //AuthProvider authProvider = AuthProvider();
+    //var mapUserinformations = authProvider.getUserByEmail('tester@web.de');
     return Row(
       children: <Widget>[
         InformationContentDetails(),

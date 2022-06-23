@@ -1,4 +1,5 @@
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,27 +15,11 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
-  bool checkBoxValue = false;
-  //textfield controllers:
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-
-  Future signIn() async{
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim()
-      );
-    } on FirebaseAuthException catch (e){
-      print(e);
-    }
-  }
+  var userData;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+
     super.dispose();
   }
 
@@ -121,6 +106,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                   children: [
                     GestureDetector(
                       onTap: () {
+                        authProvider.clearController();
                         Navigator.of(context).pushNamed(ForgotPasswordRoute);
                         },
                       child: Text(
@@ -137,49 +123,20 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
               SizedBox(height: 15,),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                          value: checkBoxValue,
-                          onChanged: (value){
-                            setState(() {
-                              checkBoxValue = value;
-                            });
-                      }),
-                      Text("Admin",)
-                    ],
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 15,),
-
               InkWell(
                 onTap: () async {
+                  Map<String, dynamic> mapUserinformations = {};
+                  mapUserinformations = await authProvider.getUserByEmail();
 
-                  //is admin then check if admin exists with this email
-                  if(checkBoxValue == true && await authProvider.getAdminExistence() == true){
-                    print('admin gibt es!!!!!');
-                    if(!await authProvider.signIn()){      //signIn failed, then return Login failed
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Login failed!"))
-                      );
-                      return;
-                    }
-                    else {
-                      authProvider.clearController(); //if signIn is success, then clear controller
-                      Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                    }
-                  }
+                  print("uid: "+ mapUserinformations['uid']);
+                  print("status: "+ mapUserinformations['status']);
+                  print("rolle: "+ mapUserinformations['role']);
 
-                  //no admin with this email exists
-                  if(checkBoxValue == true && await authProvider.getAdminExistence() == false){
+                  //status from user = locked
+                  if(mapUserinformations['status'] == 'gesperrt'){
                     showDialog(context: context, builder: (BuildContext context){
                       return AlertDialog(
-                        title: Text("Error: Es gibt keinen Admin mit dieser E-Mail"),
+                        title: Text("Error: Dein Account ist gesperrt"),
                         actions: [
                           TextButton(
                             child: Text("Ok"),
@@ -192,27 +149,66 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     });
                   }
 
-                    //if admin not selected, check if scientist exists with this email
-                    if(checkBoxValue == false && await authProvider.getScientistExistence() == true){
-                    print('scientist gibt es!!!!!');
-                    if(!await authProvider.signIn()){      //signIn failed, then return Login failed
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Login failed!"))
+                  //status from user = deleted
+                  if(mapUserinformations['status'] == 'gelöscht'){
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                        title: Text("Error: Dein Account wurde gelöscht. Er existiert nicht mehr."),
+                        actions: [
+                          TextButton(
+                            child: Text("Ok"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ],
                       );
-                      return;
+                    });
+                  }
+
+                  //status from user = active
+                  if(mapUserinformations['status'] == 'aktiv') {
+                    //role from user = admin
+                    if (mapUserinformations['role'] == 'Admin') {
+                      print('admin - am einloggen');
+                      if(!await authProvider.signIn()){      //signIn failed, then return "Login failed"
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Login fehlgeschlagen!"))
+                        );
+                        return;
+                      }
+                      else {
+                        authProvider.clearController(); //if signIn is success, then clear controller
+                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
+                      }
                     }
-                    else {
-                      authProvider.clearController(); //if signIn is success, then clear controller
-                      Navigator.of(context).pushNamed(UsersAdministrationRoute);
+
+                    //role from user = scientist
+                    if (mapUserinformations['role'] == 'Wissenschaftler') {
+                      print('scientist - am einloggen');
+                      if(!await authProvider.signIn()){      //signIn failed, then return "Login failed"
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Login fehlgeschlagen!"))
+                        );
+                        return;
+                      }
+                      else {
+                        authProvider.clearController(); //if signIn is success, then clear controller
+                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
+                      }
                     }
-                  } if(checkBoxValue == false && await authProvider.getScientistExistence() == false) {
+
+                    //role from user = user
+                    if (mapUserinformations['role'] == 'User') {
+                      print('user - kein zugriff');
                       showDialog(context: context, builder: (BuildContext context){
                         return AlertDialog(
-                          title: Text("Error: Es gibt keinen Wissenschaftler mit dieser E-Mail"),
+                          title: Text("Error: Du hast keine Zugriffsberichtigung auf diesen Login."),
                           actions: [
                             TextButton(
                               child: Text("Ok"),
                               onPressed: () {
+                                authProvider.clearController();
                                 Navigator.of(context).pop();
                               },
                             )
@@ -220,8 +216,9 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                         );
                       });
                     }
-
+                  }
                 },
+
                 child: Container(
                   decoration: BoxDecoration(color: Colors.deepPurple,
                   borderRadius: BorderRadius.circular(20)),
@@ -263,6 +260,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 
               InkWell(
                   onTap: (){
+                    authProvider.clearController();
                     Navigator.of(context).pushNamed(RegristrationUserRoute);
                   },
                   child: Container(

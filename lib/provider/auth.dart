@@ -9,7 +9,6 @@ import '../services/user_services.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
-
 class AuthProvider with ChangeNotifier {
 
   AuthProvider({Key key});
@@ -72,10 +71,10 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-   Future <void> updateUser(String id,String birthday, String gender, String role, )async{
+   Future <void> updateUserEdit(String id,String birthday, String gender, String role)async{
     print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
     return await FirebaseFirestore.instance
-        .collection('admins')
+        .collection('users')
         .doc(id)
         .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
          'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
@@ -84,20 +83,61 @@ class AuthProvider with ChangeNotifier {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  Future <void> updateUserSignup(String id,String birthday, String gender, String role)async{
+    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
+      'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
+      'birthday': birthday, 'gender': gender, 'status': 'aktiv','role': role,})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future <void> updateUser(String id,String birthday, String gender, String role)async{
+    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
+      'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
+      'birthday': birthday, 'gender': gender, 'role': role,})
+        .then((value) => print("User Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
   Future <void> updateUserStatus(String id, String status )async{
     return await FirebaseFirestore.instance
-        .collection('admins')
+        .collection('users')
         .doc(id)
         .update({'status': status})
         .then((value) => print("User status Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future <bool> getAdminExistence()async{
+  Future<Map<String, dynamic>> getUserByEmail() async {
+    var userData;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: emailController.text.trim())
+        .get()
+        .then((QuerySnapshot docs) {
+
+            if (docs.docs.isNotEmpty){
+              print('test not empty + emailcontroller: '+emailController.text.trim() );
+            userData = docs.docs[0].data();
+          }
+    });
+    return userData;
+  }
+
+
+  Future <bool> getAdminExistence()async{  //bearbeiten
     print('hier wird abgefragt: '+emailController.text.trim());
     var i = await FirebaseFirestore.instance
-        .collection('admins')
-        .where('email', isEqualTo: emailController.text.trim())
+        .collection('users')
+        .where('email', isEqualTo: emailController.text.trim(),)
         .get();
     if(i.size > 0){
       print('mit der email gibt admins: '+i.size.toString());
@@ -108,14 +148,12 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future <bool> getScientistExistence()async{
-    print('hier wird abgefragt: '+emailController.text.trim());
+  Future <bool> getScientistExistence()async{ //bearbeiten
     var i = await FirebaseFirestore.instance
         .collection('scientists')
         .where('email', isEqualTo: emailController.text.trim())
         .get();
     if(i.size > 0){
-      print('mit der email gibt scientist: '+i.size.toString());
       return true;
     }
     else{
@@ -123,24 +161,9 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future <Map<String, dynamic>> getAdminData()async{
-    var i = await FirebaseFirestore.instance
-        .collection('admins')
-        .where('uid', isEqualTo: emailController.text.trim())
-        .get();
-    if(i.size > 0){
-      print('mit der email gibt admins: '+i.size.toString());
-      //return true;
-    }
-    else{
-      //return false;
-    }
-  }
-
-
   static Future deleteUser(String uid) async {
       await FirebaseFirestore.instance
-          .collection('admins')
+          .collection('users')
           .doc(uid)
           .delete();
 
@@ -148,7 +171,7 @@ class AuthProvider with ChangeNotifier {
 
   }
 
-  Future<bool> signUp(String birthday, String gender) async {
+  Future<bool> signUpUser(String birthday, String gender) async {
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
@@ -158,7 +181,7 @@ class AuthProvider with ChangeNotifier {
           .then((result) async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("id", result.user.uid);  //userid setzen
-        _userServices.createAdmin(
+        _userServices.createUser(
           uid: result.user.uid,
           username: usernameController.text.trim(),
           email: emailController.text.trim(),
@@ -166,7 +189,8 @@ class AuthProvider with ChangeNotifier {
           lastName: lastNameController.text.trim(),
           birthday: birthday,
           gender: gender,
-          status: 'active',
+          status: 'aktiv',
+          role: 'User',
         );});
       return true;
     } catch (e) {
@@ -186,6 +210,7 @@ class AuthProvider with ChangeNotifier {
 
   void clearController() {
     usernameController.text = '';
+    emailController.text = '';
     passwordController.text = '';
     passwordConfirmedController.text = '';
     firstNameController.text = '';
@@ -193,7 +218,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> reloadUserModel() async {  //reloading user data
-    _userModel = await _userServices.getAdminById(user.uid);
+    _userModel = await _userServices.getUserById(user.uid);
     notifyListeners();
   }
 
@@ -209,7 +234,7 @@ class AuthProvider with ChangeNotifier {
       _user = firebaseUser;
       await prefs.setString("id", firebaseUser.uid);
 
-      _userModel = await _userServices.getAdminById(user.uid).then((value) {  //checking if user is admin
+      _userModel = await _userServices.getUserById(user.uid).then((value) {  //checking if user is admin
         _status = Status.Authenticated;
         return value;  //userModel
       });
