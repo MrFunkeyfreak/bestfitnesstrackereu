@@ -4,7 +4,7 @@ import '../../constants/app_colors.dart';
 class SideMenuDrawerHeader extends StatelessWidget {
   const SideMenuDrawerHeader({Key key}) : super(key: key);
 
-  //header of hamburgericon (menu)
+  //header of hamburgericon (menu) - just some text - used in sidemenu_drawer.dart
   @override
   Widget build(BuildContext context) {
     return Container(

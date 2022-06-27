@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// usermodel to have all informations of a user
+// get used in auth.dart for database requests
 class UserModel {
   final String UID = "uid";
   final String USERNAME = "username";
@@ -21,7 +23,7 @@ class UserModel {
   String _status;
   String _role;
 
-//  getters
+  // getters
   String get uid => _uid;
   String get username => _username;
   String get email => _email;
@@ -32,7 +34,8 @@ class UserModel {
   String get status => _status;
   String get role => _role;
 
-
+  // input snapshot - get all the data from a user by the input snapshot
+  // get used in auth.dart for database requests
   UserModel.fromSnapshot(DocumentSnapshot snapshot) {
     Map<String, dynamic> data = snapshot.data() as Map<String,dynamic>;
     _uid = data[UID];

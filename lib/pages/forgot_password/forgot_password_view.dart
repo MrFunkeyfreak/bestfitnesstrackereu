@@ -9,6 +9,9 @@ class ForgotPasswordView extends StatefulWidget {
   State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
+// forgot password page - when an user forgets his password, then he can request a password reset link
+// not in use anymore, because the user won't have access to the login anymore and scientist need to call an admin
+
 class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final TextEditingController _emailController = TextEditingController();
 
@@ -50,100 +53,102 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 500),
-          padding: EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Text(
-                  'Gib deine E-Mail Adresse ein. \n Dann senden wir dir einen Link zum zurücksetzen des Passworts ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 500),
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Text(
+                    'Gib deine E-Mail Adresse ein. \n Dann senden wir dir einen Link zum zurücksetzen des Passworts ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
-              ),
 
-              SizedBox(height: 15,),
+                SizedBox(height: 15,),
 
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                    labelText: "E-Mail",
-                    hintText: "abc@domain.com",
-                    suffixIcon: Icon(Icons.mail_outline,),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
+                TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                      labelText: "E-Mail",
+                      hintText: "abc@domain.com",
+                      suffixIcon: Icon(Icons.mail_outline,),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)
+                      )
+                  ),
+                ),
+
+                SizedBox(height: 15,),
+
+                InkWell(
+                    onTap: (){
+                      passwordReset();
+                      //Navigator.of(context).pushNamed();
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(color: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(20)),
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Passwort zurücksetzen",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),)
                     )
                 ),
-              ),
 
-              SizedBox(height: 15,),
+                SizedBox(height: 15,),
 
-              InkWell(
-                  onTap: (){
-                    passwordReset();
-                    //Navigator.of(context).pushNamed();
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(20)),
-                      alignment: Alignment.center,
-                      width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        "Passwort zurücksetzen",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),)
-                  )
-              ),
+                Row(
+                  children: [
+                    Expanded(
+                        child: Divider(
+                          height: 50,
+                          color: Colors.grey[500],
+                        )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Du hast dein Passwort \nbereits zurückgesetzt?'),
+                    ),
+                    Expanded(
+                        child: Divider(
+                          height: 50,
+                          color: Colors.grey[500],
+                        )
+                    ),
+                  ],
+                ),
 
-              SizedBox(height: 15,),
+                SizedBox(height: 15,),
 
-              Row(
-                children: [
-                  Expanded(
-                      child: Divider(
-                        height: 50,
-                        color: Colors.grey[500],
-                      )
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Text('Du hast dein Passwort bereits zurückgesetzt?'),
-                  ),
-                  Expanded(
-                      child: Divider(
-                        height: 50,
-                        color: Colors.grey[500],
-                      )
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 15,),
-
-              InkWell(
-                  onTap: (){
-                    Navigator.of(context).pushNamed(AuthenticationPageRoute);
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(color: Colors.deepPurple,
-                          borderRadius: BorderRadius.circular(20)),
-                      alignment: Alignment.center,
-                      width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        "Zurück zum Login",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),)
-                  )
-              ),
-            ],
+                InkWell(
+                    onTap: (){
+                      Navigator.of(context).pushNamed(AuthenticationPageRoute);
+                    },
+                    child: Container(
+                        decoration: BoxDecoration(color: Colors.deepPurple,
+                            borderRadius: BorderRadius.circular(20)),
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          "Zurück zum Login",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),)
+                    )
+                ),
+              ],
+            ),
           ),
         ),
       ),

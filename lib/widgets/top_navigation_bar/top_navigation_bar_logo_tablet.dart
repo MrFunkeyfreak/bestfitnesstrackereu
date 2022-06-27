@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// TopNavigationBar Logo for tablet
+
 class TopNavBarLogoTablet extends StatelessWidget {
   const TopNavBarLogoTablet({Key key}) : super(key: key);
 

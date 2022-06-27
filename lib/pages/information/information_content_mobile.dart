@@ -1,6 +1,9 @@
+import 'package:bestfitnesstrackereu/pages/information/widgets/informations_content_details.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/page_content_details/informations_content_details.dart';
 
+
+// information page for mobile with InformationContentDetails (input of the page)
+// used in information_view.dart
 
 class InformationContentMobile extends StatelessWidget {
   const InformationContentMobile({Key key}) : super(key: key);
@@ -15,7 +18,7 @@ class InformationContentMobile extends StatelessWidget {
         SizedBox(
           height: 100,
         ),
-        //CallToAction('Join Course'),
+        //CallToAction('Join our Fitnesstracker now!'),
       ],
     );
   }

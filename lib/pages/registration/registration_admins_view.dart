@@ -1,10 +1,12 @@
 import 'package:bestfitnesstrackereu/pages/registration/widgets/radiobuttons.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider/auth.dart';
 import '../../widgets/loading_circle/loading_circle.dart';
 
+// not in use because we have edit_button_admin.dart
 
 class RegistrationAdminsView extends StatefulWidget {
   const RegistrationAdminsView({Key key}) : super(key: key);
@@ -20,6 +22,8 @@ class _RegristrationViewState extends State<RegistrationAdminsView> {
   String _birthDateInString;
   DateTime birthDate;
   bool isDateSelected= false;
+
+  var _formKey = GlobalKey<FormState> ();
 
   @override
   void dispose() {
@@ -87,14 +91,19 @@ class _RegristrationViewState extends State<RegistrationAdminsView> {
 
                 SizedBox(height: 15,),
 
-                TextField(
-                  controller: authProvider.emailController,
-                  decoration: InputDecoration(
-                      labelText: "E-Mail",
-                      hintText: "abc@domain.com",
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
+                Form(
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.always,
+                  child: TextFormField(
+                    validator: (email) => EmailValidator.validate(email) ? null : "Please enter a valid email",
+                    controller: authProvider.emailController,
+                    decoration: InputDecoration(
+                        labelText: "E-Mail",
+                        hintText: "abc@domain.com",
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)
+                        )
+                    ),
                   ),
                 ),
 
@@ -263,6 +272,10 @@ class _RegristrationViewState extends State<RegistrationAdminsView> {
 
                 InkWell(
                     onTap: () async {
+
+                      final form = _formKey.currentState;
+                      print(form);
+
                       print('pw confirmed:' + authProvider.passwordConfirmedController.text.trim());
                       print('pw:' + authProvider.passwordController.text.trim());
 
@@ -272,12 +285,12 @@ class _RegristrationViewState extends State<RegistrationAdminsView> {
                             && authProvider.firstNameController.text.trim() != null && authProvider.lastNameController.text.trim() != null
                             && _birthDateInString != null && _genderSelected != null ) {    //if signIn is success, then signUp + clear controller
 
-                          /*if(authProvider.validateEmail(authProvider.email.text.trim()) == null){
+                          if(form.validate()){
                             print('validate email okok');
                           }
                           else{
                             print('validate email notgoodatall');
-                          }             -> email checken, dass es bestimmtes format einhält */
+                          }
 
                           await authProvider.signUpUser(_birthDateInString, _genderSelected);
                           authProvider.clearController();

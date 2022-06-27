@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../datamodels/navbar_item_model.dart';
 
+// just defining the size of the TextStyle of the TopNavBarItem in mobile size (sidemenu)
+
 class TopNavBarItemMobile extends StatelessWidget {
   final NavBarItemModel model;
   TopNavBarItemMobile({this.model});

@@ -1,9 +1,10 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:responsive_table/responsive_table.dart';
-
 import '../../datamodels/user_model.dart';
 import '../../services/user_services.dart';
+
+// everything in this class is used in user_administration_view_...
+// used for the function of the table
 
 class UsersTable with ChangeNotifier {
 
@@ -19,15 +20,14 @@ class UsersTable with ChangeNotifier {
   List<Map<String, dynamic>> sourceFiltered = [];
   List<Map<String, dynamic>> usersTableSource = [];
   List<Map<String, dynamic>> selecteds = [];
-  // ignore: unused_field
   String selectableKey = "id";
 
   String sortColumn;
   bool sortAscending = true;
   bool isLoading = true;
   bool showSelect = true;
-  var random = new Random();
 
+  // Headers of the table
   List<DatatableHeader> headers = [
     DatatableHeader(
         text: "UID",
@@ -89,10 +89,12 @@ class UsersTable with ChangeNotifier {
   List<UserModel> _users = <UserModel>[];
   List<UserModel> get users => _users;
 
+  // get all users from the database
   Future _loadFromFirebase() async {
     _users = await _userServices.getAllUsers();
   }
 
+  // get all the data from the users (_loadFromFirebase safed the data in _users) and safe them in a Map
   List<Map<String, dynamic>> _getUsersData() {
     List<Map<String, dynamic>> temps = [];
     var i = _users.length;
@@ -114,30 +116,30 @@ class UsersTable with ChangeNotifier {
     return temps;
   }
 
+  // initialize the data from the database into the table
   initializeData() async {
     mockPullData();
   }
 
   mockPullData() async {
-    expanded = List.generate(currentPerPage, (index) => false);
-
+    expanded = List.generate(currentPerPage, (index) => false);  //generate a list of currentpages
     isLoading = true;
     notifyListeners();
-    await _loadFromFirebase();
+    await _loadFromFirebase();    // get all users from the database
     sourceOriginal.clear();
     sourceOriginal.addAll(_getUsersData());
     sourceFiltered = sourceOriginal;
-    total = sourceFiltered.length;
-    usersTableSource = sourceFiltered.getRange(0, _users.length).toList();     //hier fehler
+    total = sourceFiltered.length;  //total length of the users in the table
+    usersTableSource = sourceFiltered.getRange(0, _users.length).toList();     // return range from 0 to the size of the user in the table/database
     isLoading = false;
     notifyListeners();
   }
 
+  // resets the data
   resetData({start: 0}) async {
     isLoading = true;
     notifyListeners();
-    var _expandedLen =
-    total - start < currentPerPage ? total - start : currentPerPage;
+    var _expandedLen = total - start < currentPerPage ? total - start : currentPerPage;
     expanded = List.generate(_expandedLen as int, (index) => false);
     usersTableSource.clear();
     usersTableSource = sourceFiltered.getRange(start, start + _expandedLen).toList();
@@ -145,10 +147,10 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
+  // filters the data in the table
   filterData(value) {
     isLoading = true;
     notifyListeners();
-
     try {
       if (value == "" || value == null) {
         sourceFiltered = sourceOriginal;
@@ -160,7 +162,6 @@ class UsersTable with ChangeNotifier {
             .contains(value.toString().toLowerCase()))
             .toList();
       }
-
       total = sourceFiltered.length;
       var _rangeTop = total < currentPerPage ? total : currentPerPage;
       expanded = List.generate(_rangeTop, (index) => false);
@@ -168,11 +169,11 @@ class UsersTable with ChangeNotifier {
     } catch (e) {
       print(e);
     }
-
     isLoading = false;
     notifyListeners();
   }
 
+  // sorts the data when an user clicks on the column
   onSort(dynamic value){
     isLoading = true;
     notifyListeners();
@@ -195,27 +196,18 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
+  // add or remove the selected row to the "selecteds" variable
   onSelected(bool value, Map <String, dynamic> item){
     print("$value  $item ");
     if (value) {
-      selecteds.add(item);     //Liste von Map <String, dynamic>
+      selecteds.add(item);     //List of Map <String, dynamic>
     } else {
       selecteds.removeAt(selecteds.indexOf(item));
     }
     notifyListeners();
   }
 
-  getSelected(bool value, Map <String, dynamic> item){
-    print("$value  $item ");
-    if (value) {
-      selecteds.add(item);     //Liste von Map <String, dynamic>
-    } else {
-      selecteds.removeAt(selecteds.indexOf(item));
-    }
-    notifyListeners();
-    return selecteds;
-  }
-
+  // when click on field select all, then select the entire map to selecteds
   onSelectAll(bool value){
     if (value) {
       selecteds = usersTableSource.map((entry) => entry).toList().cast();
@@ -232,6 +224,7 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
+  // clicking on previous page
   previous(){
     currentPage == 1
         ? null
@@ -243,6 +236,7 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
+  // clicking on next page
   next(){
     currentPage + currentPerPage - 1 > total
         ? null
@@ -257,6 +251,7 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
+  // initialize the table
   UsersTable.init() {
     initializeData();
   }

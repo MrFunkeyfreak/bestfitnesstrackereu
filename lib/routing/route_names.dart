@@ -1,3 +1,5 @@
+// route names and sidemenuitem routes
+
 const String InformationRoute = "/info";
 const String NeuigkeitenRoute = "/news";
 const String AuthenticationPageRoute = "/login";
@@ -8,6 +10,8 @@ const String DashboardRoute = "/dashboard";
 const String ForgotPasswordRoute = "/forgot_password";
 const String ProfileRoute = "/profile";
 const String UsersAdministrationRoute = "/userverwaltung";
+const String AccessDeniedRoute = "/access_denied";
+
 
 
 class MenuItemRoutes{

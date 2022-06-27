@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// centers the layout/page and sets a maxWidth  - used in layout_template.dart
+// input a widget -> the page
+
 class CenteredView extends StatelessWidget {
   final Widget child;
   const CenteredView({Key key, this.child}) : super(key: key);

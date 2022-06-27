@@ -1,5 +1,8 @@
+import 'package:bestfitnesstrackereu/pages/neuigkeiten/widgets/neuigkeiten_content_details.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/page_content_details/neuigkeiten_content_details.dart';
+
+// neuigkeiten page for desktop with NeuigkeitenContentDetails (input of the page)
+// used in neuigkeiten_view.dart
 
 class NeuigkeitenContentDesktop extends StatelessWidget {
   const NeuigkeitenContentDesktop({Key key}) : super(key: key);
@@ -11,7 +14,7 @@ class NeuigkeitenContentDesktop extends StatelessWidget {
         NeuigkeitenContentDetails(),
         Expanded(
           child: Center(
-            //child: CallToAction('Join Course'),
+            //child: CallToAction('Join our Fitnesstracker now!'),
           ),
         )
       ],

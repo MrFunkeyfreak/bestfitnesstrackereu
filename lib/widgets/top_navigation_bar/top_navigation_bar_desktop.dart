@@ -1,19 +1,41 @@
-import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/top_navigation_bar_logo.dart';
+import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/desktop/top_navigation_bar_admin_desktop.dart';
+import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/desktop/top_navigation_bar_scientist_desktop.dart';
+import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/desktop/top_navigation_bar_user_desktop.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../provider/auth.dart';
 import '../../routing/route_names.dart';
-import '../top_navbar_item/top_navbar_item.dart';
+
+// different TopNavigationBar for admin, scientist and user
+
+final user = FirebaseAuth.instance.currentUser;
+var mapUserinformations;
+final AuthProvider authProvider = AuthProvider();
+
+// get the user information in form of Map<String, dynamic> from the currentUser email
+// input: currentUser email - output: user information in form of Map<String, dynamic>
+// used: in FutureBuilder below, to get the role of the current user
+Future<Map<String, dynamic>> getCurrentUserEmail() async {    // get the email of the currentUser
+  mapUserinformations = await authProvider.getUserByEmailInput(user.email);
+
+  return await mapUserinformations;
+}
+
 
 class TopNavigationBarDesktop extends StatelessWidget {
-  const TopNavigationBarDesktop({Key key}) : super(key: key);
+
+  // using varibale, otherwise authProvider.getUserByEmailInput(user.email) would get called really often -> error
+  var currentUserInfos = getCurrentUserEmail();
 
   @override
   Widget build(BuildContext context) {
+    //final authProvider = Provider.of<AuthProvider>(context);  // creating an instance of authProvider
 
     bool currentRouteIsAdmin = false;
     bool currentRouteIsUser = false;
     bool currentRouteIsScientist = false;
 
+    // checking if an admin, an user or a scientist page is the currentRoute and then set the specific bool value to true
     Navigator.popUntil(context, (currentRoute) {
       if (currentRoute.settings.name == RegristrationScientistRoute || currentRoute.settings.name == RegristrationAdminRoute ||
           currentRoute.settings.name == DashboardRoute || currentRoute.settings.name == UsersAdministrationRoute) {
@@ -24,151 +46,84 @@ class TopNavigationBarDesktop extends StatelessWidget {
       }
       if (currentRoute.settings.name == InformationRoute || currentRoute.settings.name == NeuigkeitenRoute ||
           currentRoute.settings.name == AuthenticationPageRoute || currentRoute.settings.name == RegristrationUserRoute ||
-          currentRoute.settings.name == ForgotPasswordRoute) {
+          currentRoute.settings.name == ForgotPasswordRoute || currentRoute.settings.name == AccessDeniedRoute) {
         currentRouteIsUser = true;
       }
       // Return true so popUntil() pops nothing.
       return true;
     });
 
-    if(currentRouteIsUser == true){
+    print('1111111 is null');
+    final user = FirebaseAuth.instance.currentUser;
+    print('222222222 is null');
+    // if currentUser not exist - no user is logged in
+    if(user == null) {
+      print('user is null');
+      mapUserinformations = null;
+    } else {         // if currentUser exist
+      print('user email: ' + user.email);
 
-    return Container(
-      height: 100,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-
-          SizedBox(width: 30,),
-          TopNavBarLogo(),
-          SizedBox(width: 30,),
-          Visibility(child: Text( "TheBestFitnessTracker", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal,))),
-
-          Spacer(),      //Space between logo+text and widgets in the center of the row
-          TopNavBarItem('Informationen', InformationRoute),
-          SizedBox(width: 30,),
-          TopNavBarItem('Neuigkeiten', NeuigkeitenRoute),
-          SizedBox(width: 30,),
-
-          Spacer(), //Space between widgets in the center of the row and end of row
-          SizedBox(width: 30,),
-          TopNavBarItem('Login', AuthenticationPageRoute),
-          SizedBox(width: 30,),
-          TopNavBarItem('Teilehmer \n werden', RegristrationUserRoute),
-          SizedBox(width: 30,),
-
-        ],
-      ),
-        );}
-
-
-    if(currentRouteIsAdmin == true) {
-      final user = FirebaseAuth.instance.currentUser;
-      return Container(
-        height: 100,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-
-            SizedBox(width: 30,),
-            TopNavBarLogo(),
-            SizedBox(width: 15,),
-            Visibility(child: Text( "Admin", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.normal,))),
-
-            Spacer(),      //Space between logo+text and widgets in the center of the row
-            TopNavBarItem('Userverwaltung', UsersAdministrationRoute),
-            SizedBox(width: 30,),
-            TopNavBarItem('Dashboard', DashboardRoute),
-            SizedBox(width: 30,),
-            TopNavBarItem('Informationen', DashboardRoute),
-            SizedBox(width: 30,),
-            TopNavBarItem('Neuigkeiten', DashboardRoute),
-
-            Spacer(), //Space between widgets in the center of the row and end of row
-            Text('eingeloggt als: \n' + user.email),
-
-            SizedBox(width: 10,),
-
-            TextButton.icon(
-              onPressed: () async => {
-                await FirebaseAuth.instance.signOut(),
-                print('user ist ausgeloggt'),
-                Navigator.of(context).pushNamed(AuthenticationPageRoute),
-              },
-              icon: Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-                color: Colors.black,
-                size: 20,
-              ),
-              label: Text("Logout",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14
-                  )
-              ),
-              style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.white),
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.all(10)),
-              ),
-            ),
-          ],
-        ),
+      // get the role of the current user - used: check the role of the currentUser and display the right TopNavigationBar
+      // input: currentUserInfos (Future of the user information) - output: mapUserinformations in which is stored the role of the current user
+      FutureBuilder<Map<String, dynamic>>(
+          future: currentUserInfos,
+          builder: (_, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+            if(snapshot.connectionState == ConnectionState.done) {
+              print('no data');
+              if (snapshot.hasError){
+                return Text('Something went wrong');
+              }
+              if(snapshot.hasData){
+                print('no data');
+                return mapUserinformations=snapshot.data['role'];
+              } else {
+                print('no data');
+              }
+            } else {
+              return CircularProgressIndicator();
+            }
+          }
       );
     }
-    if (currentRouteIsScientist == true) {
-      final user = FirebaseAuth.instance.currentUser;
-      return Container(
-        height: 100,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
 
-            SizedBox(width: 30,),
-            TopNavBarLogo(),
-            SizedBox(width: 30,),
-            Visibility(child: Text( "Wissenschaftler", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal,))),
+    // current user exist and role is safed in mapUserinformations
+    if(mapUserinformations != null){
+      print('rolle ist: '+mapUserinformations['role']);
 
-            Spacer(),      //Space between logo+text and widgets in the center of the row
-            TopNavBarItem('Userverwaltung', UsersAdministrationRoute),
-            SizedBox(width: 30,),
-            TopNavBarItem('Dashboard', DashboardRoute),
-            SizedBox(width: 30,),
-
-            Spacer(), //Space between widgets in the center of the row and end of row
-            SizedBox(width: 30,),
-            Text('eingeloggt als: \n' + user.email),
-
-            SizedBox(width: 10,),
-
-            TextButton.icon(
-              onPressed: () async => {
-                await FirebaseAuth.instance.signOut(),
-                print('user ist ausgeloggt'),
-                Navigator.of(context).pushNamed(AuthenticationPageRoute),
-              },
-              icon: Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-                color: Colors.black,
-                size: 20,
-              ),
-              label: Text("Logout",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14
-                  )
-              ),
-              style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.white),
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.all(10)),
-              ),
-            ),
-          ],
-        ),
-      );
+    // specific bool value for user is true and role is user, then create the user TopNavigationBar for user
+    // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for user displayed
+    if(currentRouteIsUser == true && mapUserinformations['role'] == 'User'){
+      return TopNavigationBarUserDesktop();
+    } else {
+      if (mapUserinformations['role'] == 'User') {
+        return TopNavigationBarUserDesktop();
+      }
     }
-  }
+
+    // specific bool value for admin is true and role is admin, then create the user TopNavigationBar for admin
+    // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for admin displayed
+    if(currentRouteIsAdmin == true && mapUserinformations['role'] == 'Admin') {
+      return TopNavigationBarAdminDesktop();
+    } else {
+      if (mapUserinformations['role'] == 'Admin') {
+        return TopNavigationBarAdminDesktop();
+      }
+    }
+
+    // specific bool value for scientist is true and role is scientist, then create the user TopNavigationBar for scientist
+    // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for scientist displayed
+    if (currentRouteIsScientist == true && mapUserinformations['role'] == 'Scientist') {
+      return TopNavigationBarScientistDesktop();
+    } else {
+      if (mapUserinformations['role'] == 'Scientist') {
+        return TopNavigationBarScientistDesktop();
+      }
+    }
+
+    // no user is logged in - currentUser not exist
+    } else{
+      print('user not logged in');
+      return TopNavigationBarUserDesktop();
+    }
+    }
 }

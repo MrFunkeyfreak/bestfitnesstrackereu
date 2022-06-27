@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// itemmodel for the TopNavigationBar - get used in widgets
 class NavBarItemModel {
   final String title;
   final String navigationPath;

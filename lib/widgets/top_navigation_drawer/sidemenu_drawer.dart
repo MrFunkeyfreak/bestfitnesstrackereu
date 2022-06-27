@@ -5,7 +5,7 @@ import 'sidemenu_drawer_header.dart';
 
 class SideMenuDrawer extends StatelessWidget {
 
-//drawer for hamburgericon (menu) in mobile screen
+//drawer for hamburgericon (menu) in mobile screen - used in layout_template.dart
   @override
   Widget build(BuildContext context) {
     return Drawer(

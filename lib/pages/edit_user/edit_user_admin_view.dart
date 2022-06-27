@@ -1,9 +1,9 @@
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../datamodels/get_user_data.dart';
 import '../../provider/auth.dart';
 import '../../widgets/loading_circle/loading_circle.dart';
+import '../registration/widgets/radiobuttons.dart';
 
 
 class EditUserAdminView extends StatefulWidget {
@@ -13,7 +13,9 @@ class EditUserAdminView extends StatefulWidget {
   State<EditUserAdminView> createState() => _RegristrationViewState();
 }
 
+// not in use anymore - I used an alertdialog in user_administration_view.dart instead navigating to this page (to registrate an user as admin)
 class _RegristrationViewState extends State<EditUserAdminView> {
+
   List gender = [ "Männlich", "Weiblich" ];
   String _genderSelected;
 
@@ -26,25 +28,7 @@ class _RegristrationViewState extends State<EditUserAdminView> {
     super.dispose();
   }
 
-  Row addRadioButton(int btnValue, String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Radio(
-          activeColor: Theme.of(context).primaryColor,
-          value: gender[btnValue],
-          groupValue: _genderSelected,
-          onChanged: (value){
-            setState(() {
-              print(value);
-              _genderSelected=value;
-            });
-          },
-        ),
-        Text(title)
-      ],
-    );
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -241,9 +225,18 @@ class _RegristrationViewState extends State<EditUserAdminView> {
 
                     SizedBox(width: 10,),
 
-
-                    addRadioButton(0, 'Männlich'),
-                    addRadioButton(1, 'Weiblich'),
+                    RadioButtonGender(
+                        0, 'Männlich', _genderSelected,(newValue) {
+                      print(newValue);
+                      setState(() =>
+                      _genderSelected = newValue);
+                    }),
+                    RadioButtonGender(
+                        1, 'Weiblich', _genderSelected,(newValue) {
+                      print(newValue);
+                      setState(() =>
+                      _genderSelected = newValue);
+                    }),
 
                   ],
                 ),

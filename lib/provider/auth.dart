@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../datamodels/user_model.dart';
 import '../services/user_services.dart';
 
-enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
+enum Status { Uninitialized, Admin, Scientist, Authenticating, Unauthenticated }
+//statt Authenticated - admin und scientist + vor aufbau der seite currentuser rolle checken
 
 class AuthProvider with ChangeNotifier {
 
@@ -25,6 +25,7 @@ class AuthProvider with ChangeNotifier {
 
   // public variables
   final formkey = GlobalKey<FormState>();
+  UserServices userServices = UserServices ();
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -38,7 +39,7 @@ class AuthProvider with ChangeNotifier {
     _fireSetUp();
   }
 
-  _fireSetUp() async {
+  _fireSetUp() async {      //initializeApp (Firebase connection) and check changes
     await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: "AIzaSyCaos63TeR_y3YVXxD5x180IYz3ssQeWHE",
@@ -50,9 +51,39 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
+  // checking if user is allowed to have access
+  _onStateChanged(User firebaseUser) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (firebaseUser == null) {
+      _status = Status.Unauthenticated;
+    } else { //when firebase user exist
+      _user = firebaseUser;
+      await prefs.setString("id", firebaseUser.uid);
+
+      _userModel = await _userServices.getUserById(user.uid).then((value) async {  //checking if user is Authenticated
+        Map<String, dynamic> mapUserinformations = {};
+        mapUserinformations = await getUserByUid(user.uid);
+        if(mapUserinformations['role'] == 'Admin'){
+          _status = Status.Admin; //admin
+          print('role is admin');
+        }
+        if(mapUserinformations['role'] == 'Scientist'){
+          _status = Status.Scientist; //scientist
+          print('role is scientist');
+        }
+        if(mapUserinformations['role'] == 'User'){
+          _status = Status.Unauthenticated; //scientist
+          print('role is user');
+        }
+        return value;  //userModel
+      });
+    }
+    notifyListeners();
+  }
+
+  // sign in the user -> used for login page (input = email and password)
   Future<bool> signIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
@@ -62,7 +93,27 @@ class AuthProvider with ChangeNotifier {
           .then((value) async {
         await prefs.setString("id", value.user.uid);  //checking user
       });
+
+
+      // jetzt checken ob der user admin oder scientist ist
+      Map<String, dynamic> mapUserinformations = {};
+      mapUserinformations = await getUserByEmail();
+
+      if(mapUserinformations['role'] == 'Admin'){
+        _status = Status.Admin; //admin
+        print('role is admin');
+      }
+      if(mapUserinformations['role'] == 'Scientist'){
+        _status = Status.Scientist; //scientist
+        print('role is scientist');
+      }
+      if(mapUserinformations['role'] == 'User'){
+        _status = Status.Unauthenticated; //scientist
+        print('role is user');
+      }
+      notifyListeners();
       return true;
+
     } catch (e) {
       _status = Status.Unauthenticated;
       notifyListeners();
@@ -71,6 +122,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // update user especially made for the edit button in the user tables as admin
    Future <void> updateUserEdit(String id,String birthday, String gender, String role)async{
     print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
     return await FirebaseFirestore.instance
@@ -83,6 +135,7 @@ class AuthProvider with ChangeNotifier {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  // update user especially made for the sign up in the registration pages (when user has status deleted)
   Future <void> updateUserSignup(String id,String birthday, String gender, String role)async{
     print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
     return await FirebaseFirestore.instance
@@ -95,18 +148,7 @@ class AuthProvider with ChangeNotifier {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
-  Future <void> updateUser(String id,String birthday, String gender, String role)async{
-    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
-    return await FirebaseFirestore.instance
-        .collection('users')
-        .doc(id)
-        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
-      'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
-      'birthday': birthday, 'gender': gender, 'role': role,})
-        .then((value) => print("User Updated"))
-        .catchError((error) => print("Failed to update user: $error"));
-  }
-
+  // update user especially made for changing status in the user tables (input: id and the value of the changed status)
   Future <void> updateUserStatus(String id, String status )async{
     return await FirebaseFirestore.instance
         .collection('users')
@@ -116,8 +158,10 @@ class AuthProvider with ChangeNotifier {
         .catchError((error) => print("Failed to update user: $error"));
   }
 
+  // input: emailController -> get the user data (used in registration, login and user_administration -> check if user with this email already exist)
   Future<Map<String, dynamic>> getUserByEmail() async {
     var userData;
+    try {
     await FirebaseFirestore.instance
         .collection('users')
         .where('email', isEqualTo: emailController.text.trim())
@@ -130,9 +174,43 @@ class AuthProvider with ChangeNotifier {
           }
     });
     return userData;
+  }catch (e) {print('Fehler getUserByEmail: '+e.toString());}}
+
+  Future<Map<String, dynamic>> getUserByEmailInput(String email) async {
+    var userData;
+    try {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get()
+        .then((QuerySnapshot docs) {
+
+          print('okokoko');
+      if (docs.docs.isNotEmpty){
+        userData = docs.docs[0].data();
+        print('getUserByEmailInput not empty: role is ' + userData['role']);
+      }
+    });
+    return userData;
+  }catch (e) {print('Fehler getUserByEmail: '+e.toString());}}
+
+  Future<Map<String, dynamic>> getUserByUid(String uid) async {
+    var userData;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((QuerySnapshot docs) {
+
+      if (docs.docs.isNotEmpty){
+        print('getUserByUid not empty');
+        userData = docs.docs[0].data();
+      }
+    });
+    return userData;
   }
 
-
+/*                 //not in use anymore
   Future <bool> getAdminExistence()async{  //bearbeiten
     print('hier wird abgefragt: '+emailController.text.trim());
     var i = await FirebaseFirestore.instance
@@ -159,18 +237,17 @@ class AuthProvider with ChangeNotifier {
     else{
       return false;
     }
-  }
+  }  */
 
+  // delete a user from FirebaseFirestore -> not in use because we can't delete the user from authFirebase
   static Future deleteUser(String uid) async {
       await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
           .delete();
-
-      //await FirebaseAuth.instance.  user(uid).onDelete(uid);
-
   }
 
+  // signUp a user in the database (auth and firestore) - used in registration
   Future<bool> signUpUser(String birthday, String gender) async {
     try {
       _status = Status.Authenticating;
@@ -201,13 +278,14 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  //signOut a user - used in every page after the login (in the TopNavigationBar)
   Future signOut() async {
     FirebaseAuth.instance.signOut();
     _status = Status.Unauthenticated;
     notifyListeners();
-    return Future.delayed(Duration.zero); //need to return a future
+    return Future.delayed(Duration.zero);
   }
-
+  // clear all controllers - used after every click on a button
   void clearController() {
     usernameController.text = '';
     emailController.text = '';
@@ -222,38 +300,58 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  updateUserData(Map<String, dynamic> data) async {  //update user data
-    _userServices.updateUserData(data);
-  }
-
-  _onStateChanged(User firebaseUser) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (firebaseUser == null) {
-      _status = Status.Unauthenticated;
-    } else { //when firebase user exist
-      _user = firebaseUser;
-      await prefs.setString("id", firebaseUser.uid);
-
-      _userModel = await _userServices.getUserById(user.uid).then((value) {  //checking if user is admin
-        _status = Status.Authenticated;
-        return value;  //userModel
-      });
-    }
-    notifyListeners();
-  }
-
-  String validateEmail(String value) { //validate the email textfield
-    value = value.trim();
-
-    if (emailController.text != null) {
-      if (value.isEmpty) {
-        return 'Email can\'t be empty';
-      } else if (!value.contains(RegExp(
-          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"))) {
-        return 'Enter a correct email address';
+  String validateEmail(String email) { //validate the email textfield
+    RegExp regex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (email.isEmpty) {
+      return 'Bitte gib eine E-Mail ein.';
+    } else {
+      if (!regex.hasMatch(email)) {
+        return 'Bitte gib eine gültige E-Mail ein.';
+      } else {
+        return null;
       }
     }
-
-    return null;
   }
+
+  // at least one upper case, lower case, one digit, one Special character and at least 8  and max 18 characters in length
+  String validatePassword(String password) {
+    RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,18}$');
+    if (password.isEmpty) {
+      return 'Bitte gib ein Passwort ein.';
+    } else {
+      if (!regex.hasMatch(password)) {
+        return 'Bitte gib ein gültiges Passwort ein.';
+      } else {
+        return null;
+      }
+    }
+  }
+
+  // at least one upper case, lower case, one digit, one Special character and at least 8 characters in length
+  String validateUsername(String username) {
+    RegExp regex = RegExp(r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$');
+    if (username.isEmpty) {
+      return 'Bitte gib einen Benutzernamen ein.';
+    } else {
+      if (!regex.hasMatch(username)) {
+        return 'Bitte gib einen gültigen Benutzernamen ein.';
+      } else {
+        return null;
+      }
+    }
+  }
+
+  String validateName(String name) { // so modifizieren, dass (^[A-Z]*) = erster buchstabe immer groß
+    RegExp regex = RegExp(r"(^[A-Z]*)^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$");
+    if (name.isEmpty) {
+      return 'Bitte gib einen Namen ein.';
+    } else {
+      if (!regex.hasMatch(name)) {
+        return 'Bitte gib einen gültigen Namen ein.';
+      } else {
+        return null;
+      }
+    }
+  }
+
 }

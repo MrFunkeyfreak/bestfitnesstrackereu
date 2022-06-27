@@ -1,6 +1,8 @@
+import 'package:bestfitnesstrackereu/pages/neuigkeiten/widgets/neuigkeiten_content_details.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/page_content_details/neuigkeiten_content_details.dart';
 
+// neuigkeiten page for mobile with NeuigkeitenContentDetails (input of the page)
+// used in neuigkeiten_view.dart
 
 class NeuigkeitenContentMobile extends StatelessWidget {
   const NeuigkeitenContentMobile({Key key}) : super(key: key);
@@ -15,7 +17,7 @@ class NeuigkeitenContentMobile extends StatelessWidget {
         SizedBox(
           height: 100,
         ),
-        //CallToAction('Join Course'),
+        //CallToAction('Join our Fitnesstracker now!'),
       ],
     );
   }

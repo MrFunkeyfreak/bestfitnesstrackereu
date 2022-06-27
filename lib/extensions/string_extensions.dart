@@ -1,5 +1,7 @@
 import '../datamodels/routing_data.dart';
 
+// displays the path/route of the page and the queryParameters.
+// query parameters are not in use, because I hadn't enough time to insert videos in the website (so always empty)
 extension StringExtension on String {
   RoutingData get getRoutingData {
     var uriData = Uri.parse(this);

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../provider/auth.dart';
 import '../../widgets/loading_circle/loading_circle.dart';
 
+// not in use because we have edit_button_scientist.dart
+
 
 class RegistrationScientistView extends StatefulWidget {
   const RegistrationScientistView({Key key}) : super(key: key);

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../routing/route_names.dart';
+// not in use, because we hadn't enough time to implement a login for the users, where they can change their profile
 
 class ProfileView extends StatefulWidget {
   const ProfileView ({Key key}) : super(key: key);
@@ -22,7 +22,7 @@ class _ProfileViewState extends State<ProfileView> {
   Future getDocId() async {
     await FirebaseFirestore.instance
         .collection('users')
-        .orderBy('first name', descending: true)  //descending = true, dann ältester oben und jünster unten // max oben bei true, ronaldo oben bei false
+        .orderBy('first name', descending: true)  //descending = true, dann ältester oben und jünster unten
         .get()
         .then(
             (snapshot) => snapshot.docs.forEach((document) {
