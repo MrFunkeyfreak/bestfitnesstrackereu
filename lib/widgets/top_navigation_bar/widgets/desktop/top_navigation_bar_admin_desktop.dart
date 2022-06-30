@@ -48,7 +48,9 @@ class TopNavigationBarAdminDesktop extends StatelessWidget {
                     return Text('Something went wrong');
                   }
                   if(snapshot.hasData){
-                    return Text('eingeloggt als: \n' + snapshot.data);
+                    try {
+                      return Text('eingeloggt als: \n' + snapshot.data);
+                    } catch (e){ print(e);}
                   }
                 } else {
                   return CircularProgressIndicator();
