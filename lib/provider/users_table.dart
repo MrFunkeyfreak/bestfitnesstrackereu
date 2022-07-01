@@ -19,6 +19,10 @@ class UsersTable with ChangeNotifier {
   List<Map<String, dynamic>> sourceOriginal = [];
   List<Map<String, dynamic>> sourceFiltered = [];
   List<Map<String, dynamic>> usersTableSource = [];
+  //List<Map<String, dynamic>> usersTableSourceAdmin = [];
+  List<Map<String, dynamic>> usersTableSourceScientist = [];
+  //List<Map<String, dynamic>> usersTableSourceUsers = [];
+
   List<Map<String, dynamic>> selecteds = [];
   String selectableKey = "id";
 
@@ -28,7 +32,7 @@ class UsersTable with ChangeNotifier {
   bool showSelect = true;
 
   // Headers of the table
-  List<DatatableHeader> headers = [
+  List<DatatableHeader> adminTableHeaders = [
     DatatableHeader(
         text: "UID",
         value: "uid",
@@ -85,6 +89,57 @@ class UsersTable with ChangeNotifier {
         textAlign: TextAlign.left),
   ];
 
+  List<DatatableHeader> scientistTableHeaders = [
+    DatatableHeader(
+        text: "UID",
+        value: "uid",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Benutzername",
+        value: "username",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "E-Mail",
+        value: "email",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Vorname",
+        value: "first name",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Nachname",
+        value: "last name",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Geburtsdatum",
+        value: "birthday",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Geschlecht",
+        value: "gender",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+    DatatableHeader(
+        text: "Status",
+        value: "status",
+        show: true,
+        sortable: true,
+        textAlign: TextAlign.left),
+  ];
+
   UserServices _userServices = UserServices();
   List<UserModel> _users = <UserModel>[];
   List<UserModel> get users => _users;
@@ -116,6 +171,26 @@ class UsersTable with ChangeNotifier {
     return temps;
   }
 
+  List<Map<String, dynamic>> _getUsersDataScientist() {
+    List<Map<String, dynamic>> temps = [];
+    var i = _users.length;
+    print("Users:" + i.toString());
+    for (UserModel userData in _users) {
+      temps.add({
+        "uid": userData.uid,
+        "username": userData.username,
+        "email": userData.email,
+        "first name": userData.firstName,
+        "last name": userData.lastName,
+        "birthday": userData.birthday,
+        "gender": userData.gender,
+        "status": userData.status,
+      });
+      i++;
+    }
+    return temps;
+  }
+
   // initialize the data from the database into the table
   initializeData() async {
     mockPullData();
@@ -128,6 +203,7 @@ class UsersTable with ChangeNotifier {
     await _loadFromFirebase();    // get all users from the database
     sourceOriginal.clear();
     sourceOriginal.addAll(_getUsersData());
+    usersTableSourceScientist.addAll(_getUsersDataScientist());
     sourceFiltered = sourceOriginal;
     total = sourceFiltered.length;  //total length of the users in the table
     usersTableSource = sourceFiltered.getRange(0, _users.length).toList();     // return range from 0 to the size of the user in the table/database

@@ -17,7 +17,7 @@ class AuthenticationPage extends StatefulWidget {
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
   var userData;
-  List<GlobalKey<FormState>> _formKeys = [
+  static final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(), GlobalKey<FormState>(),
   ];
 

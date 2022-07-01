@@ -27,7 +27,7 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
 
   AuthProvider authproviderInstance = AuthProvider();   // creating Instance of AuthProvider
 
-  List<GlobalKey<FormState>> _formKeys = [
+  static final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(),
     GlobalKey<FormState>(), GlobalKey<FormState>()
   ];

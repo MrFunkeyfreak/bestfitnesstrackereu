@@ -9,7 +9,8 @@ const String RegristrationAdminRoute = "/adminregistrieren";
 const String DashboardRoute = "/dashboard";
 const String ForgotPasswordRoute = "/forgot_password";
 const String ProfileRoute = "/profile";
-const String UsersAdministrationRoute = "/userverwaltung";
+const String UsersAdministrationRoute = "/adminverwaltung";
+const String UsersScientistRoute = "/scientistverwaltung";
 const String AccessDeniedRoute = "/access_denied";
 
 
@@ -31,5 +32,6 @@ List <MenuItemRoutes> sideMenuItems = [
   MenuItemRoutes('Dashboard', DashboardRoute),
   MenuItemRoutes('Passwort vergessen', ForgotPasswordRoute),
   MenuItemRoutes('Profile', ProfileRoute),
-  MenuItemRoutes('Userverwaltung', UsersAdministrationRoute),
+  MenuItemRoutes('Adminverwaltung', UsersAdministrationRoute),
+  MenuItemRoutes('Scientistverwaltung', UsersScientistRoute),
 ];

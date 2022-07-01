@@ -327,7 +327,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // at least one upper case, lower case, one digit, one Special character and at least 8 characters in length
+  // validate the username textfield
   String validateUsername(String username) {
     RegExp regex = RegExp(r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$');
     if (username.isEmpty) {
@@ -340,7 +340,7 @@ class AuthProvider with ChangeNotifier {
       }
     }
   }
-
+  // validate the name textfield
   String validateName(String name) { // so modifizieren, dass (^[A-Z]*) = erster buchstabe immer groß
     RegExp regex = RegExp(r"(^[A-Z]*)^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$");
     if (name.isEmpty) {

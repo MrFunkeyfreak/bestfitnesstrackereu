@@ -14,7 +14,7 @@ class LayoutTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
     var screenSize = MediaQuery.of(context).size;
 
     return ResponsiveBuilder(
@@ -24,13 +24,13 @@ class LayoutTemplate extends StatelessWidget {
         // if DeviceScreenType = mobile, then return TopNavigationBarMobile (is a sidemenu)
         // sidemenu, because the screen is to small for TopNavigationBar -> responsivness of the website
         appBar: sizingInformation.deviceScreenType == DeviceScreenType.mobile
-            ? TopNavigationBarMobile(scaffoldKey)
+            ? TopNavigationBarMobile(scaffoldKey, context)
             : PreferredSize(preferredSize: Size(screenSize.width, 1000),
                 child: sizingInformation.deviceScreenType == DeviceScreenType.tablet
                     ? TopNavigationBarTablet()
                     : TopNavigationBarDesktop()
         ),
-        drawer: SideMenuDrawer(),   //drawer of the sidemenu for the mobile screen
+        drawer: sizingInformation.deviceScreenType == DeviceScreenType.mobile ? SideMenuDrawer() : null,   //drawer of the sidemenu for the mobile screen
         body: CenteredView(
           child: Column(
             children: <Widget>[

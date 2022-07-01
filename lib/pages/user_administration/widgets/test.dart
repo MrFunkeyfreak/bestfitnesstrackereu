@@ -1,10 +1,8 @@
-import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/top_navigation_bar_admin_desktop.dart';
-import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/top_navigation_bar_scientist_desktop.dart';
-import 'package:bestfitnesstrackereu/widgets/top_navigation_bar/widgets/top_navigation_bar_user_desktop.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../provider/auth.dart';
 import '../../../routing/route_names.dart';
+import '../../../widgets/top_navigation_bar/widgets/desktop/top_navigation_bar_user_desktop.dart';
 
 // different TopNavigationBar for admin, scientist and user
 //final FirebaseAuth auth = FirebaseAuth.instance;
@@ -85,7 +83,7 @@ class Test extends StatelessWidget {
     if(mapUserinformations != null){
       //specific bool value for user is true, then create the user TopNavigationBar
       if(currentRouteIsUser == true && mapUserinformations['role'] == 'User'){
-        return TopNavigationBarUser();
+        return TopNavigationBarUserDesktop();
       }
       //}
 
@@ -94,22 +92,22 @@ class Test extends StatelessWidget {
       //if (authProvider.status == Status.Scientist) {
       //specific bool value for admin is true, then create the admin TopNavigationBar
       if(currentRouteIsAdmin == true && mapUserinformations['role'] == 'Admin') {
-        return TopNavigationBarAdmin();
+        return TopNavigationBarUserDesktop();
       }
 
       //specific bool value for scientist is true, then create the admin TopNavigationBar
       //if(mapUserinformations['role'] == 'Scientist'){
       //if (authProvider.status == Status.Scientist) {
       if (currentRouteIsScientist == true && mapUserinformations['role'] == 'Scientist') {
-        return TopNavigationBarScientist();
+        return TopNavigationBarUserDesktop();
       }}
     else{
-      return TopNavigationBarUser();
+      return TopNavigationBarUserDesktop();
     }
 
     // when it is 404_page_not_found error page (need to do: check which user is logged in)
     if (currentRouteIsScientist == false && currentRouteIsAdmin == false && currentRouteIsUser == false){
-      return TopNavigationBarUser();
+      return TopNavigationBarUserDesktop();
     }
   }
 }

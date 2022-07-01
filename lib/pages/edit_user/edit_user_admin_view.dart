@@ -13,7 +13,7 @@ class EditUserAdminView extends StatefulWidget {
   State<EditUserAdminView> createState() => _RegristrationViewState();
 }
 
-// not in use anymore - I used an alertdialog in user_administration_view.dart instead navigating to this page (to registrate an user as admin)
+// not in use anymore - I used an alertdialog in user_administration_view_admin.dart instead navigating to this page (to registrate an user as admin)
 class _RegristrationViewState extends State<EditUserAdminView> {
 
   List gender = [ "Männlich", "Weiblich" ];

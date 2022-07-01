@@ -25,7 +25,7 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
   DateTime birthDate;
   bool isDateSelected= false;
 
-  List<GlobalKey<FormState>> _formKeys = [
+  static final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(),
   ];
 

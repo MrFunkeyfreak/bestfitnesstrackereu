@@ -23,7 +23,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
   bool isDateSelected= false;
 
   Map<String, dynamic> mapUserinformations = {};
-  List<GlobalKey<FormState>> _formKeys = [
+  static final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(),
     GlobalKey<FormState>(), GlobalKey<FormState>()
   ];

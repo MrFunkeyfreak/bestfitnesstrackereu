@@ -13,12 +13,15 @@ Future<String> currentUserEmail() async {    // get the email of the currentUser
   return email;
 }
 
+var currentEmail = currentUserEmail();
+
 class TopNavigationBarAdminDesktop extends StatelessWidget {
   const TopNavigationBarAdminDesktop({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      //color: Colors.grey,
       height: 100,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,7 +44,7 @@ class TopNavigationBarAdminDesktop extends StatelessWidget {
           Spacer(), //Space between widgets in the center of the row and end of row
 
           FutureBuilder<String>(     // displaying the email of the current user
-              future: currentUserEmail(),
+              future: currentEmail,
               builder: (_, AsyncSnapshot<String> snapshot) {
                 if(snapshot.connectionState == ConnectionState.done) {
                   if (snapshot.hasError){

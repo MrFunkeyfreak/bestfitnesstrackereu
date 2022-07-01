@@ -8,12 +8,14 @@ import 'package:bestfitnesstrackereu/pages/neuigkeiten/neuigkeiten_view.dart';
 import 'package:bestfitnesstrackereu/pages/profile/profile_view.dart';
 import 'package:bestfitnesstrackereu/pages/registration/registration_admins_view.dart';
 import 'package:bestfitnesstrackereu/pages/registration/registration_scientist_view.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/admin/user_administration_view_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/scientist/user_administration_view_scientist.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/scientist/user_administration_view_scientist_desktop.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import '../pages/404_page_not_found//page_not_found.dart';
 import '../pages/layout_template/layout_template.dart';
 import '../pages/registration/registration_users_view.dart';
-import '../pages/user_administration/user_administration_view.dart';
 
 // used to navigate to a specific route or to the page not found route
 // _getPageRoute with a fading previous route + Layouttemplate which builds up the page + settings (routename)
@@ -39,7 +41,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case ProfileRoute:
       return _getPageRoute(LayoutTemplate(child1: ProfileView()), settings);
     case UsersAdministrationRoute:
-      return _getPageRoute(LayoutTemplate(child1: UserAdministrationView()), settings);
+      return _getPageRoute(LayoutTemplate(child1: UserAdministrationViewAdmin()), settings);
+    case UsersScientistRoute:
+      return _getPageRoute(LayoutTemplate(child1: UserAdministrationViewScientist()), settings);
     case AccessDeniedRoute:
       return _getPageRoute(LayoutTemplate(child1: AccessDenied()), settings);
     default:

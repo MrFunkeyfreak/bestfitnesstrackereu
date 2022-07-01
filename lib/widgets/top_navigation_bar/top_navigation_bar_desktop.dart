@@ -39,7 +39,7 @@ class TopNavigationBarDesktop extends StatelessWidget {
 
     final user = FirebaseAuth.instance.currentUser;
 
-    // current user exist and role is safed in mapUserinformations
+    // current user exist
     if(user != null){
      // print('user is logged in ' + currentUserEmail2);
 
