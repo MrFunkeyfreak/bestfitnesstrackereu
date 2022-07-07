@@ -1,5 +1,7 @@
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_scientist.dart';
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_scientist.dart';
 import 'package:bestfitnesstrackereu/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -71,20 +73,6 @@ class _UsersAdministrationViewScientistTabletState extends State<UsersAdministra
                         Navigator.of(context).pushNamed(UsersAdministrationRoute);
                       },
                     ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Wissenschaftlerverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Adminverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -112,14 +100,12 @@ class _UsersAdministrationViewScientistTabletState extends State<UsersAdministra
                                     children: <Widget>[
 
                                       //add-button + functionality (see widgets)
-                                      AddButtonAdmin(),
+                                      AddButtonScientist(),
 
                                       SizedBox(width: 15,),
 
                                       //edit-button + functionality  (see widgets)
-                                      EditButtonAdmin(),
-
-                                      //SizedBox(width: 15,),
+                                      EditButtonScientist(),
 
                                     ],),
 

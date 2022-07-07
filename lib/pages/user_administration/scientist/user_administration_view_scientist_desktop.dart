@@ -1,5 +1,7 @@
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_scientist.dart';
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_scientist.dart';
 import 'package:bestfitnesstrackereu/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -71,25 +73,10 @@ class _UsersAdministrationViewScientistDesktopState extends State<UsersAdministr
                         Navigator.of(context).pushNamed(UsersAdministrationRoute);
                       },
                     ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Wissenschaftlerverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Adminverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
                   ],
                 ),
               ),
               body: SingleChildScrollView(
-                //child: authproviderInstance.status == Status.Admin ? Column(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
@@ -112,12 +99,12 @@ class _UsersAdministrationViewScientistDesktopState extends State<UsersAdministr
                                     children: <Widget>[
 
                                       //add-button + functionality (see widgets)
-                                      AddButtonAdmin(),
+                                      AddButtonScientist(),
 
                                       SizedBox(width: 15,),
 
                                       //edit-button + functionality  (see widgets)
-                                      EditButtonAdmin(),
+                                      EditButtonScientist(),
 
                                       SizedBox(width: 15,),
 

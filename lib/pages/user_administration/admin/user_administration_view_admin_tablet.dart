@@ -77,13 +77,6 @@ class _UsersAdministrationViewAdminTabletState extends State<UsersAdministration
                         Navigator.of(context).pushNamed(UsersAdministrationRoute);
                       },
                     ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Adminverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
                   ],
                 ),
               ),

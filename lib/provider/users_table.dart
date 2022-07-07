@@ -10,7 +10,7 @@ class UsersTable with ChangeNotifier {
 
   List<int> perPages = [10, 20, 50, 100];
   int total = 100;
-  int currentPerPage = 10;
+  int currentPerPage = 100;
   List<bool> expanded;
   String searchKey = "id";
 
@@ -144,9 +144,14 @@ class UsersTable with ChangeNotifier {
   List<UserModel> _users = <UserModel>[];
   List<UserModel> get users => _users;
 
+  UserServices _scientistServices = UserServices();
+  List<UserModel> _scientist = <UserModel>[];
+  List<UserModel> get scientist => _scientist;
+
   // get all users from the database
   Future _loadFromFirebase() async {
     _users = await _userServices.getAllUsers();
+    _scientist = await _userServices.getAllScientists();
   }
 
   // get all the data from the users (_loadFromFirebase safed the data in _users) and safe them in a Map
@@ -173,9 +178,9 @@ class UsersTable with ChangeNotifier {
 
   List<Map<String, dynamic>> _getUsersDataScientist() {
     List<Map<String, dynamic>> temps = [];
-    var i = _users.length;
-    print("Users:" + i.toString());
-    for (UserModel userData in _users) {
+    var i = _scientist.length;
+    print("Wissenschaftler:" + i.toString());
+    for (UserModel userData in _scientist) {
       temps.add({
         "uid": userData.uid,
         "username": userData.username,

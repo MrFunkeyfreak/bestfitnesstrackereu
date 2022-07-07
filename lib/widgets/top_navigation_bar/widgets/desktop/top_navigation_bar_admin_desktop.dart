@@ -33,6 +33,7 @@ class TopNavigationBarAdminDesktop extends StatelessWidget {
           Visibility(child: Text( "Admin", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.normal,))),
 
           Spacer(),      //Space between logo+text and widgets in the center of the row
+
           TopNavBarItem('Userverwaltung', UsersAdministrationRoute),
           SizedBox(width: 30,),
           TopNavBarItem('Dashboard', DashboardRoute),

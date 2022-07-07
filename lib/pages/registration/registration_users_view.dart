@@ -16,6 +16,7 @@ class RegistrationUsersView extends StatefulWidget {
 }
 
 class _RegristrationViewState extends State<RegistrationUsersView> {
+  final _formKeys = GlobalKey<FormState>();
   String _genderSelected;
 
   String _birthDateInString;
@@ -23,10 +24,6 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
   bool isDateSelected= false;
 
   Map<String, dynamic> mapUserinformations = {};
-  static final List<GlobalKey<FormState>> _formKeys = [
-    GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(),
-    GlobalKey<FormState>(), GlobalKey<FormState>()
-  ];
 
   @override
   void dispose() {
@@ -84,126 +81,124 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                   SizedBox(height: 15,),
 
                   Form(
-                    key: _formKeys[0],
+                    key: _formKeys,
                     autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                      validator: (username) {
-                        print(authProvider.validateUsername(username));
-                        return authProvider.validateUsername(username);
-                      },
-                      controller: authProvider.usernameController,
-                      decoration: InputDecoration(
-                          labelText: "Benutzername",
-                          hintText: "Max123",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            validator: (username) {
+                              print(authProvider.validateUsername(username));
+                              return authProvider.validateUsername(username);
+                            },
+                            controller: authProvider.usernameController,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                                labelText: "Benutzername",
+                                hintText: "Max123",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+
+                          SizedBox(height: 15,),
+
+                          TextFormField(
+                            validator: (email) => EmailValidator.validate(email) ? null : "Bitte gib eine gültige E-Mail an.",
+                            controller: authProvider.emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                                labelText: "E-Mail",
+                                hintText: "abc@domain.com",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+
+
+                          SizedBox(height: 15,),
+
+                          TextFormField(
+                            validator: (password) {
+                              print(authProvider.validatePassword(password));
+                              return authProvider.validatePassword(password);
+                            },
+                            controller: authProvider.passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                labelText: "Passwort",
+                                hintText: "******",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+
+
+                          SizedBox(height: 15,),
+
+                          TextFormField(
+                            validator: (passwordConfirm) {
+                              print(authProvider.validatePassword(passwordConfirm));
+                              return authProvider.validatePassword(passwordConfirm);
+                            },
+                            controller: authProvider.passwordConfirmedController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                labelText: "Passwort wiederholen",
+                                hintText: "******",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+
+
+                          SizedBox(height: 15,),
+
+                          TextFormField(
+                            validator: (firstName) {
+                              print(authProvider.validateName(firstName));
+                              return authProvider.validateName(firstName);
+                            },
+                            controller: authProvider.firstNameController,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                                labelText: "Vorname",
+                                hintText: "Max",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+
+
+                          SizedBox(height: 15,),
+
+                          TextFormField(
+                            validator: (lastName) {
+                              print(authProvider.validateName(lastName));
+                              return authProvider.validateName(lastName);
+                            },
+                            controller: authProvider.lastNameController,
+                            keyboardType: TextInputType.name,
+                            decoration: InputDecoration(
+                                labelText: "Nachname",
+                                hintText: "Mustermann",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)
+                                )
+                            ),
+                          ),
+                        ],
                       ),
                     ),),
 
-                  SizedBox(height: 15,),
 
-                  Form(
-                    key: _formKeys[1],
-                    autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                      validator: (email) => EmailValidator.validate(email) ? null : "Bitte gib eine gültige E-Mail an.",
-                      controller: authProvider.emailController,
-                      decoration: InputDecoration(
-                          labelText: "E-Mail",
-                          hintText: "abc@domain.com",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 15,),
-
-                  Form(
-                    key: _formKeys[2],
-                    autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                        validator: (password) {
-                          print(authProvider.validatePassword(password));
-                          return authProvider.validatePassword(password);
-                        },
-                      controller: authProvider.passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          labelText: "Passwort",
-                          hintText: "******",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 15,),
-
-                  Form(
-                    key: _formKeys[3],
-                    autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                      validator: (passwordConfirm) {
-                        print(authProvider.validatePassword(passwordConfirm));
-                        return authProvider.validatePassword(passwordConfirm);
-                      },
-                      controller: authProvider.passwordConfirmedController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          labelText: "Passwort wiederholen",
-                          hintText: "******",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 15,),
-
-                  Form(
-                    key: _formKeys[4],
-                    autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                      validator: (firstName) {
-                        print(authProvider.validateName(firstName));
-                        return authProvider.validateName(firstName);
-                      },
-                      controller: authProvider.firstNameController,
-                      decoration: InputDecoration(
-                          labelText: "Vorname",
-                          hintText: "Max",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 15,),
-
-                  Form(
-                    key: _formKeys[5],
-                    autovalidateMode: AutovalidateMode.always,
-                    child: TextFormField(
-                      validator: (lastName) {
-                        print(authProvider.validateName(lastName));
-                        return authProvider.validateName(lastName);
-                      },
-                      controller: authProvider.lastNameController,
-                      decoration: InputDecoration(
-                          labelText: "Nachname",
-                          hintText: "Mustermann",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                          )
-                      ),
-                    ),
-                  ),
 
                   SizedBox(height: 15,),
 
@@ -282,12 +277,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
 
                   InkWell(
                       onTap: () async {
-                        final usernameFormkey = _formKeys[0].currentState;
-                        final emailFormkey = _formKeys[1].currentState;
-                        final passwordFormkey = _formKeys[2].currentState;
-                        final passwordConfirmedFormkey = _formKeys[3].currentState;
-                        final firstNameFormkey = _formKeys[4].currentState;
-                        final lastNameFormkey = _formKeys[5].currentState;
+                        final Formkey = _formKeys.currentState;
 
                         print('pw confirmed:' + authProvider.passwordConfirmedController.text.trim());
                         print('pw:' + authProvider.passwordController.text.trim());
@@ -303,8 +293,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                               && isDateSelected != false && _genderSelected != null ) {
 
                             // checking if all textfields are valid
-                            if(emailFormkey.validate() && usernameFormkey.validate() && passwordFormkey.validate() &&
-                                passwordConfirmedFormkey.validate() && firstNameFormkey.validate() && lastNameFormkey.validate()){
+                            if(Formkey.validate()){
                               print('validate okok');
 
                             // input is the authProvider.emailController, which provides the written email
@@ -505,6 +494,7 @@ class _RegristrationViewState extends State<RegistrationUsersView> {
                         authProvider.clearController();
                         isDateSelected = false;
                         _genderSelected = null;
+                        //Navigator.of(context).pop();
                         Navigator.of(context).pushNamed(AuthenticationPageRoute);
                       },
                       child: Container(

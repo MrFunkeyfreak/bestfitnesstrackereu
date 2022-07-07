@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // class for getting user data from the database
-// not in use - should have used for a custom profile page (see profile_view), but I hadn't enough time for this
+// not in use - should get used for a custom profile page (see profile_view), but I hadn't enough time for this
 class GetUserData extends StatelessWidget {
   final String documentId;
 

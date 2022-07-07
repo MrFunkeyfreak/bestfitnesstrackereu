@@ -339,6 +339,13 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                           //password and passworconfirm check
                                           if(authproviderInstance.passwordConfirmedController.text.trim() == authproviderInstance.passwordController.text.trim()) {
 
+                                            print(authproviderInstance.usernameController.text.trim()+ authproviderInstance.emailController.text.trim() +
+                                                 authproviderInstance.passwordController.text.trim() + authproviderInstance.passwordConfirmedController.text.trim() +
+                                                 authproviderInstance.firstNameController.text.trim() + authproviderInstance.lastNameController.text.trim() + _birthDateInString + genderSelected  + roleSelected );
+                                            print(authproviderInstance.usernameController.text.trim() != null && authproviderInstance.emailController.text.trim() != null
+                                                && authproviderInstance.passwordController.text.trim() != null && authproviderInstance.passwordConfirmedController.text.trim() != null
+                                                && authproviderInstance.firstNameController.text.trim() != null && authproviderInstance.lastNameController.text.trim() != null
+                                                ); print(isDateSelected != false && genderSelected != null && roleSelected != null);
                                             //checking that all textfields are not empty
                                             if (authproviderInstance.usernameController.text.trim() != null && authproviderInstance.emailController.text.trim() != null
                                                 && authproviderInstance.passwordController.text.trim() != null && authproviderInstance.passwordConfirmedController.text.trim() != null
@@ -365,7 +372,7 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                                   //recreate the deleted user
                                                   try{
                                                     //update user informations
-                                                    await authproviderInstance.updateUserSignup(mapUserinformations['uid'], _birthDateInString, genderSelected, 'user');
+                                                    await authproviderInstance.updateUserSignup(mapUserinformations['uid'], _birthDateInString, genderSelected, roleSelected);
 
                                                     //input: emailcontroller, output: send password reset link
                                                     try {
@@ -383,6 +390,7 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                                     authproviderInstance.clearController();
                                                     isDateSelected = false;
                                                     genderSelected = null;
+                                                    roleSelected = null;
 
                                                     // deleted user got recreated - now print a message that the registration process is completed
                                                     showDialog(context: context, builder: (BuildContext context){
@@ -402,7 +410,6 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                                       );
                                                     });
 
-                                                    authproviderInstance.clearController();
                                                     Navigator.of(context).pop();
                                                     userTable.initializeData();
                                                   }
@@ -432,9 +439,10 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                                 try{
                                                   print('email existiert noch nicht');
                                                   // sign up user in database with the birthday and gender + all controllers from authProvider
-                                                  await authproviderInstance.signUpUser(_birthDateInString, genderSelected);
+                                                  await authproviderInstance.signUpUserAdmin(_birthDateInString, genderSelected, roleSelected);
                                                   isDateSelected = false;
                                                   genderSelected = null;
+                                                  roleSelected = null;
 
                                                   showDialog(context: context, builder: (BuildContext context){
                                                     return AlertDialog(
@@ -450,8 +458,8 @@ class _AddButtonAdminState extends State<AddButtonAdmin> {
                                                     );
                                                   });
                                                   authproviderInstance.clearController();
+                                                  //Navigator.of(context).pop();
                                                   userTable.initializeData();
-                                                  Navigator.of(context).pop();
                                                 }
                                                 catch(e) {
                                                   print(e);

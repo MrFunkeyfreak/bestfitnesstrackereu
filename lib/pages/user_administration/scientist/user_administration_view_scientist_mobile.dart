@@ -1,5 +1,6 @@
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/add_button_admin.dart';
 import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_admin.dart';
+import 'package:bestfitnesstrackereu/pages/user_administration/widgets/edit_button_scientist.dart';
 import 'package:bestfitnesstrackereu/services/user_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import '../../../provider/auth.dart';
 import '../../../provider/users_table.dart';
 import '../../../routing/route_names.dart';
 import 'package:bestfitnesstrackereu/routing/route_names.dart';
+
+import '../widgets/add_button_scientist.dart';
 
 // table to administrate every user, scientist and admin
 // add, edit, delete, lock or unlock are the buttons/functions for this table (see widgets)
@@ -51,7 +54,7 @@ class _UsersAdministrationViewScientistMobileState extends State<UsersAdministra
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Spacer(),
-                        Text("Benutzerverwaltung", style: TextStyle(color: Colors.white, fontSize: 18), ),
+                        Text("Wissenschaftler-\nverwaltung", style: TextStyle(color: Colors.white, fontSize: 18), ),
                         Spacer(),
                         IconButton(icon: Icon(Icons.refresh_sharp),
                           onPressed: userTable.initializeData,
@@ -66,20 +69,6 @@ class _UsersAdministrationViewScientistMobileState extends State<UsersAdministra
                     ListTile(
                       leading: Icon(Icons.storage),
                       title: Text("Benutzerverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Wissenschaftlerverwaltung"),
-                      onTap: () {
-                        Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                      },
-                    ),
-                    ListTile(
-                      leading: Icon(Icons.storage),
-                      title: Text("Adminverwaltung"),
                       onTap: () {
                         Navigator.of(context).pushNamed(UsersAdministrationRoute);
                       },
@@ -107,203 +96,188 @@ class _UsersAdministrationViewScientistMobileState extends State<UsersAdministra
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Wrap(
-                                    children: <Widget>[
 
-                                      //add-button + functionality (see widgets)
-                                      AddButtonAdmin(),
-
-                                      SizedBox(width: 15,),
-
-                                      //edit-button + functionality  (see widgets)
-                                      EditButtonAdmin(),
-
-                                      //SizedBox(width: 15,),
-
-                                    ],),
+                                  //add-button + functionality (see widgets)
+                                  AddButtonScientist(),
 
                                   SizedBox(height: 10,),
 
-                                  Wrap(
-                                    children: [
-                                      TextButton.icon(
-                                        onPressed: () async => {
+                                  //edit-button + functionality  (see widgets)
+                                  EditButtonScientist(),
 
-                                          selectedRow = userTable.selecteds,       //get the user informations from the user, which is selected in the table
+                                  SizedBox(height: 10,),
 
-                                          if(selectedRow.isEmpty){
-                                            showDialog(context: context, builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text("Error: Bitte wähle einen User aus."),
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text("Ok"),
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            })
-                                          },
+                                  TextButton.icon(
+                                    onPressed: () async => {
 
-                                          if(selectedRow.length == 1){
+                                      selectedRow = userTable.selecteds,       //get the user informations from the user, which is selected in the table
 
-                                            uid = selectedRow[0]['uid'],     // get the uid of the selected user
+                                      if(selectedRow.isEmpty){
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return AlertDialog(
+                                            title: Text("Error: Bitte wähle einen User aus."),
+                                            actions: [
+                                              TextButton(
+                                                child: Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        })
+                                      },
 
-                                            // delete user -> for this create a Map <String, dynamic> without the personal informations from the user and set the status to deleted
-                                            UpdateUser= {'id': uid, 'username': '', 'first name': '', 'last name': '', 'birthday': '', 'gender': '',
-                                              'status': 'gelöscht', 'role': 'User'},
-                                            //update the user details to the Map <String, dynamic>      -> user is deleted
-                                            userServicesInstance.updateUserData(UpdateUser),
-                                            print(uid + 'user gelöscht'),
-                                            userTable.selecteds.clear(),
-                                            userTable.initializeData(),
-                                          },
+                                      if(selectedRow.length == 1){
 
-                                          // more than 1 user got selected
-                                          if(selectedRow.length >= 2) {
-                                            //for all users in the Map <String,dynamic> "selectedRow" update status to deleted and delete all personal informations
-                                            for (var i=0; i<selectedRow.length;i++){ //für alle uids in der Liste
-                                              //await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gelöscht'),
-                                              UpdateUser= {'id': selectedRow[i]['uid'], 'username': '', 'first name': '', 'last name': '', 'birthday': '', 'gender': '',
-                                                'status': 'gelöscht', 'role': 'User'},
-                                              userServicesInstance.updateUserData(UpdateUser),
-                                            },
-                                          },
-                                          userTable.selecteds.clear(),
-                                          userTable.initializeData(),
+                                        uid = selectedRow[0]['uid'],     // get the uid of the selected user
+
+                                        // delete user -> for this create a Map <String, dynamic> without the personal informations from the user and set the status to deleted
+                                        UpdateUser= {'id': uid, 'username': '', 'first name': '', 'last name': '', 'birthday': '', 'gender': '',
+                                          'status': 'gelöscht', 'role': 'User'},
+                                        //update the user details to the Map <String, dynamic>      -> user is deleted
+                                        userServicesInstance.updateUserData(UpdateUser),
+                                        print(uid + 'user gelöscht'),
+                                        userTable.selecteds.clear(),
+                                        userTable.initializeData(),
+                                      },
+
+                                      // more than 1 user got selected
+                                      if(selectedRow.length >= 2) {
+                                        //for all users in the Map <String,dynamic> "selectedRow" update status to deleted and delete all personal informations
+                                        for (var i=0; i<selectedRow.length;i++){ //für alle uids in der Liste
+                                          //await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gelöscht'),
+                                          UpdateUser= {'id': selectedRow[i]['uid'], 'username': '', 'first name': '', 'last name': '', 'birthday': '', 'gender': '',
+                                            'status': 'gelöscht', 'role': 'User'},
+                                          userServicesInstance.updateUserData(UpdateUser),
                                         },
-                                        icon: Icon(
-                                          IconData(0xe1bb, fontFamily: 'MaterialIcons'),
-                                          color: Colors.black,
-                                        ),
-                                        label: Text("Löschen",
-                                            style: TextStyle(
-                                                color: Colors.black
-                                            )
-                                        ),
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStateProperty.all<Color>(Colors.grey),
-                                          padding: MaterialStateProperty.all<EdgeInsets>(
-                                              EdgeInsets.all(10)),
-                                        ),
-                                      ),
-                                    ],
+                                      },
+                                      userTable.selecteds.clear(),
+                                      userTable.initializeData(),
+                                    },
+                                    icon: Icon(
+                                      IconData(0xe1bb, fontFamily: 'MaterialIcons'),
+                                      color: Colors.black,
+                                    ),
+                                    label: Text("Löschen",
+                                        style: TextStyle(
+                                            color: Colors.black
+                                        )
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all<Color>(Colors.grey),
+                                      padding: MaterialStateProperty.all<EdgeInsets>(
+                                          EdgeInsets.all(10)),
+                                    ),
                                   ),
 
                                   SizedBox(height: 10,),
 
-                                  Wrap (
-                                    children: [
-                                      TextButton.icon(
-                                        onPressed: () async => {
-                                          selectedRow = userTable.selecteds,
 
-                                          if(selectedRow.isEmpty){
-                                            showDialog(context: context, builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text("Error: Bitte wähle einen User aus."),
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text("Ok"),
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            })
-                                          },
+                                  TextButton.icon(
+                                    onPressed: () async => {
+                                      selectedRow = userTable.selecteds,
 
-                                          if(selectedRow.length == 1){
-                                            uid = selectedRow[0]['uid'],
-                                            await authproviderInstance.updateUserStatus(uid, 'gesperrt'),      //update status from user with uid to locked
-                                          },
+                                      if(selectedRow.isEmpty){
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return AlertDialog(
+                                            title: Text("Error: Bitte wähle einen User aus."),
+                                            actions: [
+                                              TextButton(
+                                                child: Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        })
+                                      },
 
-                                          if(selectedRow.length >= 2) {
-                                            // update status from all user which got selected to locked
-                                            for (var i=0; i<selectedRow.length;i++){
-                                              await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gesperrt'),
-                                            },
-                                          },
-                                          userTable.selecteds.clear(),
-                                          userTable.initializeData(),
+                                      if(selectedRow.length == 1){
+                                        uid = selectedRow[0]['uid'],
+                                        await authproviderInstance.updateUserStatus(uid, 'gesperrt'),      //update status from user with uid to locked
+                                      },
 
+                                      if(selectedRow.length >= 2) {
+                                        // update status from all user which got selected to locked
+                                        for (var i=0; i<selectedRow.length;i++){
+                                          await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'gesperrt'),
                                         },
-                                        icon: Icon(
-                                          IconData(0xe3b1, fontFamily: 'MaterialIcons'),
-                                          color: Colors.black,
-                                        ),
-                                        label: Text("Sperren",
-                                            style: TextStyle(
-                                                color: Colors.black
-                                            )
-                                        ),
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStateProperty.all<Color>(Colors.grey),
-                                          padding: MaterialStateProperty.all<EdgeInsets>(
-                                              EdgeInsets.all(10)),
-                                        ),
-                                      ),
+                                      },
+                                      userTable.selecteds.clear(),
+                                      userTable.initializeData(),
 
-                                      SizedBox(width: 15,),
-
-                                      TextButton.icon(
-                                        onPressed: () async => {
-
-                                          selectedRow = userTable.selecteds,
-                                          if(selectedRow.isEmpty){
-                                            showDialog(context: context, builder: (BuildContext context){
-                                              return AlertDialog(
-                                                title: Text("Error: Bitte wähle einen User aus."),
-                                                actions: [
-                                                  TextButton(
-                                                    child: Text("Ok"),
-                                                    onPressed: () {
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                  )
-                                                ],
-                                              );
-                                            })
-                                          },
-                                          if(selectedRow.length == 1){
-                                            uid = selectedRow[0]['uid'],
-                                            await authproviderInstance.updateUserStatus(uid, 'aktiv'),  //update status from user with uid to active (unlocked)
-                                          },
-                                          if(selectedRow.length >= 2) {
-                                            // update status from all user which got selected to active (unlocked)
-                                            for (var i=0; i<selectedRow.length;i++){
-                                              await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'aktiv'),
-                                            },
-                                          },
-                                          userTable.selecteds.clear(),
-                                          userTable.initializeData(),
-
-                                        },
-                                        icon: Icon(
-                                          IconData(0xe3b0, fontFamily: 'MaterialIcons'),
-                                          color: Colors.black,
-                                        ),
-                                        label: Text("Freischalten",
-                                            style: TextStyle(
-                                                color: Colors.black
-                                            )
-                                        ),
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                          MaterialStateProperty.all<Color>(Colors.grey),
-                                          padding: MaterialStateProperty.all<EdgeInsets>(
-                                              EdgeInsets.all(10)),
-                                        ),
-                                      ),
-                                    ],
+                                    },
+                                    icon: Icon(
+                                      IconData(0xe3b1, fontFamily: 'MaterialIcons'),
+                                      color: Colors.black,
+                                    ),
+                                    label: Text("Sperren",
+                                        style: TextStyle(
+                                            color: Colors.black
+                                        )
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all<Color>(Colors.grey),
+                                      padding: MaterialStateProperty.all<EdgeInsets>(
+                                          EdgeInsets.all(10)),
+                                    ),
                                   ),
 
+                                  SizedBox(height: 10,),
 
+                                  TextButton.icon(
+                                    onPressed: () async => {
+
+                                      selectedRow = userTable.selecteds,
+                                      if(selectedRow.isEmpty){
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return AlertDialog(
+                                            title: Text("Error: Bitte wähle einen User aus."),
+                                            actions: [
+                                              TextButton(
+                                                child: Text("Ok"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              )
+                                            ],
+                                          );
+                                        })
+                                      },
+                                      if(selectedRow.length == 1){
+                                        uid = selectedRow[0]['uid'],
+                                        await authproviderInstance.updateUserStatus(uid, 'aktiv'),  //update status from user with uid to active (unlocked)
+                                      },
+                                      if(selectedRow.length >= 2) {
+                                        // update status from all user which got selected to active (unlocked)
+                                        for (var i=0; i<selectedRow.length;i++){
+                                          await authproviderInstance.updateUserStatus(selectedRow[i]['uid'], 'aktiv'),
+                                        },
+                                      },
+                                      userTable.selecteds.clear(),
+                                      userTable.initializeData(),
+
+                                    },
+                                    icon: Icon(
+                                      IconData(0xe3b0, fontFamily: 'MaterialIcons'),
+                                      color: Colors.black,
+                                    ),
+                                    label: Text("Freischalten",
+                                        style: TextStyle(
+                                            color: Colors.black
+                                        )
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all<Color>(Colors.grey),
+                                      padding: MaterialStateProperty.all<EdgeInsets>(
+                                          EdgeInsets.all(10)),
+                                    ),
+                                  ),
                                 ],
                               ),
 

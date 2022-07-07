@@ -31,7 +31,7 @@ class LayoutTemplate extends StatelessWidget {
                     : TopNavigationBarDesktop()
         ),
         drawer: sizingInformation.deviceScreenType == DeviceScreenType.mobile ? SideMenuDrawer() : null,   //drawer of the sidemenu for the mobile screen
-        body: CenteredView(
+        body: sizingInformation.deviceScreenType != DeviceScreenType.mobile ? CenteredView(
           child: Column(
             children: <Widget>[
               Expanded(
@@ -39,7 +39,11 @@ class LayoutTemplate extends StatelessWidget {
               )
             ],
           ),
-        ),
+        ) : Column(
+          children: <Widget>[
+          Expanded(
+          child: child1,   //The widget child is the view/page returned from the router (get_PageRoutRoute)
+        ),],),
       ),
     );
   }

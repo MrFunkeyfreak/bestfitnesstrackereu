@@ -31,15 +31,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case RegristrationUserRoute:
       return _getPageRoute(LayoutTemplate(child1: RegistrationUsersView()), settings);
     case RegristrationScientistRoute:
-      return _getPageRoute(LayoutTemplate(child1: RegistrationScientistView()), settings);
+      return _getPageRoute(LayoutTemplate(child1: RegistrationScientistView()), settings);     // not in use
     case RegristrationAdminRoute:
-      return _getPageRoute(LayoutTemplate(child1: RegistrationAdminsView()), settings);
+      return _getPageRoute(LayoutTemplate(child1: RegistrationAdminsView()), settings);        // not in use
     case DashboardRoute:
       return _getPageRoute(LayoutTemplate(child1: DashboardView()), settings);
     case ForgotPasswordRoute:
       return _getPageRoute(LayoutTemplate(child1: ForgotPasswordView()), settings);
     case ProfileRoute:
-      return _getPageRoute(LayoutTemplate(child1: ProfileView()), settings);
+      return _getPageRoute(LayoutTemplate(child1: ProfileView()), settings);                   // not in use
     case UsersAdministrationRoute:
       return _getPageRoute(LayoutTemplate(child1: UserAdministrationViewAdmin()), settings);
     case UsersScientistRoute:

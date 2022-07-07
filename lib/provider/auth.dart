@@ -247,17 +247,73 @@ class AuthProvider with ChangeNotifier {
           .delete();
   }
 
-  // signUp a user in the database (auth and firestore) - used in registration
+  // signUp a user in the database (auth and firestore) - won't get auto logged in because of second instance
+  // used as admin to create a user with a choosen role - in Benutzerverwaltung
+  Future<bool> signUpUserAdmin(String birthday, String gender, String role) async {
+    try {
+      _status = Status.Authenticating;
+      notifyListeners(); //changing status
+
+      FirebaseApp secondaryApp = await Firebase.initializeApp(
+        name: 'Secondary',
+        options: Firebase.app().options,
+      );
+
+      try {
+        UserCredential credential = await FirebaseAuth.instanceFor(app: secondaryApp)
+            .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
+          //User user = result.user;
+          _userServices.createUser(
+            uid: credential.user.uid,
+            username: usernameController.text.trim(),
+            email: emailController.text.trim(),
+            firstName: firstNameController.text.trim(),
+            lastName: lastNameController.text.trim(),
+            birthday: birthday,
+            gender: gender,
+            status: 'aktiv',
+            role: role,
+          );
+
+        if (credential.user == null) throw 'An error occured. Please try again.';
+        await credential.user.sendEmailVerification();
+        print('send verfication');
+        await secondaryApp.delete();
+        print('deleted instance');
+      } on FirebaseAuthException catch (e) {
+        print(e);
+      }
+
+      return true;
+    } catch (e) {
+      _status = Status.Unauthenticated;
+      notifyListeners();
+      print(e.toString());
+      return false;
+    }
+  }
+
+
+  // signUp a user in the database (auth and firestore) - won't get auto logged in because of second instance
+  // used in registration
   Future<bool> signUpUser(String birthday, String gender) async {
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
-      await FirebaseAuth.instance
+
+      FirebaseApp secondaryApp = await Firebase.initializeApp(
+        name: 'Secondary',
+        options: Firebase.app().options,
+      );
+
+      try {
+      UserCredential credential = await FirebaseAuth.instanceFor(app: secondaryApp)
           .createUserWithEmailAndPassword(
-          email: emailController.text.trim(), password: passwordController.text.trim())
-          .then((result) async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("id", result.user.uid);  //userid setzen
+        email: emailController.text.trim(),
+        password: passwordController.text.trim()).then((result) async {
+        //User user = result.user;
         _userServices.createUser(
           uid: result.user.uid,
           username: usernameController.text.trim(),
@@ -269,6 +325,14 @@ class AuthProvider with ChangeNotifier {
           status: 'aktiv',
           role: 'User',
         );});
+
+      if (credential.user == null) throw 'An error occured. Please try again.';
+      await credential.user.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+    }
+      await secondaryApp.delete();
+
       return true;
     } catch (e) {
       _status = Status.Unauthenticated;

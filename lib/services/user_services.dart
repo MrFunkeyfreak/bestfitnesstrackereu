@@ -44,4 +44,16 @@ class UserServices {
         }
         return users;
       });
+
+  Future<List<UserModel>> getAllScientists() async =>
+      FirebaseFirestore.instance.collection(usersCollection)
+          .where('role', isEqualTo: 'User')
+          .get()
+          .then((result) {
+        List<UserModel> users = [];
+        for (DocumentSnapshot user in result.docs) {
+          users.add(UserModel.fromSnapshot(user));
+        }
+        return users;
+      });
 }

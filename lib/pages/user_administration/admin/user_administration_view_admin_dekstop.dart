@@ -77,13 +77,6 @@ class _UsersAdministrationViewAdminDesktopState extends State<UsersAdministratio
                       Navigator.of(context).pushNamed(UsersScientistRoute);
                     },
                   ),
-                  ListTile(
-                    leading: Icon(Icons.storage),
-                    title: Text("Adminverwaltung"),
-                    onTap: () {
-                      Navigator.of(context).pushNamed(UsersAdministrationRoute);
-                    },
-                  ),
                 ],
               ),
             ),

@@ -16,19 +16,18 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
+  final GlobalKey<FormState> _formKeys = GlobalKey<FormState>();
   var userData;
-  static final List<GlobalKey<FormState>> _formKeys = [
-    GlobalKey<FormState>(), GlobalKey<FormState>(),
-  ];
+
 
   @override
   void dispose() {
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
@@ -78,44 +77,51 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                 SizedBox(height: 15,),
 
                 Form(
-                  key: _formKeys[0],
-                  autovalidateMode: AutovalidateMode.always,
-                  child: TextFormField(
-                    validator: (email) => EmailValidator.validate(email) ? null : "Bitte gib eine gültige E-Mail an.",
-                    controller: authProvider.emailController,
-                    decoration: InputDecoration(
-                        labelText: "E-Mail",
-                        hintText: "abc@domain.com",
-                        suffixIcon: Icon(Icons.mail_outline,),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20)
-                        )
+                  key: _formKeys,
+                  //autovalidateMode: AutovalidateMode.always,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        TextFormField(
+                          validator: (email) => EmailValidator.validate(email) ? null : "Bitte gib eine gültige E-Mail an.",
+                          controller: authProvider.emailController,
+                          decoration: InputDecoration(
+                              labelText: "E-Mail",
+                              hintText: "abc@domain.com",
+                              suffixIcon: Icon(Icons.mail_outline,),
+                              //isDense: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)
+                              )
+                          ),
+                        ),
+
+                        SizedBox(height: 15,),
+
+                        TextFormField(
+                          validator: (password) {
+                            print(authProvider.validatePassword(password));
+                            return authProvider.validatePassword(password);
+                          },
+                          controller: authProvider.passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              labelText: "Passwort",
+                              hintText: "******",
+                              suffixIcon: Icon(Icons.lock_outline, color: Colors.grey,),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)
+                              )
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
 
-                SizedBox(height: 15,),
-
-                Form(
-                  key: _formKeys[1],
-                  autovalidateMode: AutovalidateMode.always,
-                  child: TextFormField(
-                    validator: (password) {
-                      print(authProvider.validatePassword(password));
-                      return authProvider.validatePassword(password);
-                    },
-                    controller: authProvider.passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        labelText: "Passwort",
-                        hintText: "******",
-                        suffixIcon: Icon(Icons.lock_outline, color: Colors.grey,),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20)
-                        )
-                    ),
-                  ),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -162,9 +168,7 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
                     } else {
 
                     //checking if the email and password is valid
-                    final emailFormkey = _formKeys[0].currentState;
-                    final passwordFormkey = _formKeys[1].currentState;
-                    if(emailFormkey.validate() && passwordFormkey.validate()){
+                    if(_formKeys.currentState.validate()){
                       print('validate email okok');
 
                     // input is the authProvider.emailController, which provides the written email from the user
