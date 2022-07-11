@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'information_content_mobile.dart';
 
-
 // information page displayer - ScreenTypeLayout decides which screen is getting displayed
 // in work Rinor task - at the moment just hard coded sides
 
@@ -13,8 +12,8 @@ class InformationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
-        mobile: InformationContentMobile(),
-        desktop: InformationContentDesktop(),
+      mobile: InformationContentMobile(),
+      desktop: InformationContentDesktop(),
     );
   }
 }

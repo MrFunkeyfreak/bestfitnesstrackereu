@@ -7,7 +7,6 @@ import '../../datamodels/navbar_item_model.dart';
 import '../../locator.dart';
 import '../../services/navigation_service.dart';
 
-
 class TopNavBarItem extends StatelessWidget {
   final String title;
   final String navigationPath;
@@ -16,7 +15,6 @@ class TopNavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     // every NavBarItem need to have this model
     var model = NavBarItemModel(
       title: title,
@@ -32,7 +30,6 @@ class TopNavBarItem extends StatelessWidget {
         //services should only be used from a viewmodel
         locator<NavigationService>().navigateTo(navigationPath);
       },
-
       child: ScreenTypeLayout(
         desktop: TopNavBarItemTabletDesktop(
           model: model,

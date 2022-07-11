@@ -4,7 +4,6 @@ import 'package:bestfitnesstrackereu/pages/user_administration/admin/user_admini
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-
 // user_administration page displayer - ScreenTypeLayout decides which screen is getting displayed
 // in work - at the moment not in use
 

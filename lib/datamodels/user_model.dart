@@ -37,7 +37,7 @@ class UserModel {
   // input snapshot - get all the data from a user by the input snapshot
   // get used in auth.dart for database requests
   UserModel.fromSnapshot(DocumentSnapshot snapshot) {
-    Map<String, dynamic> data = snapshot.data() as Map<String,dynamic>;
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
     _uid = data[UID];
     _username = data[USERNAME];
     _email = data[EMAIL];

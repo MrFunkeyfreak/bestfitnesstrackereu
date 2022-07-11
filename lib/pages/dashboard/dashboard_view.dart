@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../routing/route_names.dart';
 
 class DashboardView extends StatefulWidget {
-  const DashboardView ({Key key}) : super(key: key);
+  const DashboardView({Key key}) : super(key: key);
 
   @override
   State<DashboardView> createState() => _DashboardViewState();
@@ -21,10 +21,12 @@ class _DashboardViewState extends State<DashboardView> {
       body: SingleChildScrollView(
         child: Center(
           child: Column(
-            mainAxisAlignment:  MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Dashboard View - signed in as '),
-              SizedBox(height: 8,),
+              SizedBox(
+                height: 8,
+              ),
               Text(user.email),
               InkWell(
                   onTap: () async {
@@ -33,7 +35,8 @@ class _DashboardViewState extends State<DashboardView> {
                     Navigator.of(context).pushNamed(AuthenticationPageRoute);
                   },
                   child: Container(
-                      decoration: BoxDecoration(color: Colors.deepPurple,
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurple,
                           borderRadius: BorderRadius.circular(20)),
                       alignment: Alignment.center,
                       width: double.maxFinite,
@@ -42,14 +45,11 @@ class _DashboardViewState extends State<DashboardView> {
                         'sign out',
                         style: TextStyle(
                           color: Colors.white,
-                        ),)
-                  )
-              ),
-
-
+                        ),
+                      ))),
             ],
           ),
-    ),
+        ),
       ),
     );
   }

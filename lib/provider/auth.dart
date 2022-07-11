@@ -10,7 +10,6 @@ enum Status { Uninitialized, Admin, Scientist, Authenticating, Unauthenticated }
 //statt Authenticated - admin und scientist + vor aufbau der seite currentuser rolle checken
 
 class AuthProvider with ChangeNotifier {
-
   AuthProvider({Key key});
 
   User _user;
@@ -25,28 +24,22 @@ class AuthProvider with ChangeNotifier {
 
   // public variables
   final formkey = GlobalKey<FormState>();
-  UserServices userServices = UserServices ();
-
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController passwordConfirmedController = TextEditingController();
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-
+  UserServices userServices = UserServices();
 
   AuthProvider.initialize() {
     _fireSetUp();
   }
 
-  _fireSetUp() async {      //initializeApp (Firebase connection) and check changes
+  _fireSetUp() async {
+    //initializeApp (Firebase connection) and check changes
     await Firebase.initializeApp(
       options: FirebaseOptions(
         apiKey: "AIzaSyCaos63TeR_y3YVXxD5x180IYz3ssQeWHE",
         appId: "1:414667114455:web:e0d8cdd30559bc41576d92",
         messagingSenderId: "414667114455",
         projectId: "thebasics-fb4e8",
-      ),).then((value) {
+      ),
+    ).then((value) {
       FirebaseAuth.instance.authStateChanges().listen(_onStateChanged);
     });
   }
@@ -56,65 +49,67 @@ class AuthProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (firebaseUser == null) {
       _status = Status.Unauthenticated;
-    } else { //when firebase user exist
+    } else {
+      //when firebase user exist
       _user = firebaseUser;
       await prefs.setString("id", firebaseUser.uid);
 
-      _userModel = await _userServices.getUserById(user.uid).then((value) async {  //checking if user is Authenticated
+      _userModel =
+          await _userServices.getUserById(user.uid).then((value) async {
+        //checking if user is Authenticated
         Map<String, dynamic> mapUserinformations = {};
         mapUserinformations = await getUserByUid(user.uid);
-        if(mapUserinformations['role'] == 'Admin'){
+        if (mapUserinformations['role'] == 'Admin') {
           _status = Status.Admin; //admin
           print('role is admin');
         }
-        if(mapUserinformations['role'] == 'Scientist'){
+        if (mapUserinformations['role'] == 'Scientist') {
           _status = Status.Scientist; //scientist
           print('role is scientist');
         }
-        if(mapUserinformations['role'] == 'User'){
+        if (mapUserinformations['role'] == 'User') {
           _status = Status.Unauthenticated; //scientist
           print('role is user');
         }
-        return value;  //userModel
+        return value; //userModel
       });
     }
     notifyListeners();
   }
 
   // sign in the user -> used for login page (input = email and password)
-  Future<bool> signIn() async {
+  Future<bool> signIn(String email, String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
       await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-          email: emailController.text.trim(), password: passwordController.text.trim())
+          .signInWithEmailAndPassword(email: email, password: password)
           .then((value) async {
-        await prefs.setString("id", value.user.uid);  //checking user
+        await prefs.setString("id", value.user.uid); //checking user
       });
-
 
       // jetzt checken ob der user admin oder scientist ist
       Map<String, dynamic> mapUserinformations = {};
-      mapUserinformations = await getUserByEmail();
+      mapUserinformations = await getUserByEmail(email);
 
-      if(mapUserinformations['role'] == 'Admin'){
+      if (mapUserinformations['role'] == 'Admin') {
         _status = Status.Admin; //admin
         print('role is admin');
       }
-      if(mapUserinformations['role'] == 'Scientist'){
+      if (mapUserinformations['role'] == 'Wissenschaftler') {
         _status = Status.Scientist; //scientist
         print('role is scientist');
       }
-      if(mapUserinformations['role'] == 'User'){
+
+      if (mapUserinformations['role'] == 'User') {
         _status = Status.Unauthenticated; //scientist
         print('role is user');
       }
       notifyListeners();
       return true;
-
     } catch (e) {
+      print('error, daher Status.Unauthenticated');
       _status = Status.Unauthenticated;
       notifyListeners();
       print(e.toString());
@@ -123,33 +118,62 @@ class AuthProvider with ChangeNotifier {
   }
 
   // update user especially made for the edit button in the user tables as admin
-   Future <void> updateUserEdit(String id,String birthday, String gender, String role)async{
-    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
+  Future<void> updateUserEdit(
+      String uid,
+      String username,
+      String email,
+      String firstName,
+      String lastName,
+      String birthday,
+      String gender,
+      String role) async {
+    print("username: " + username + "email: " + email);
     return await FirebaseFirestore.instance
         .collection('users')
-        .doc(id)
-        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
-         'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
-         'birthday': birthday, 'gender': gender, 'role': role,})
+        .doc(uid)
+        .update({
+          'username': username,
+          'email': email,
+          'first name': firstName,
+          'last name': lastName,
+          'birthday': birthday,
+          'gender': gender,
+          'role': role,
+        })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
 
   // update user especially made for the sign up in the registration pages (when user has status deleted)
-  Future <void> updateUserSignup(String id,String birthday, String gender, String role)async{
-    print("username: " + usernameController.text.trim() + "email: " + emailController.text.trim());
+  Future<void> updateUserSignup(
+      String uid,
+      String username,
+      String email,
+      String firstName,
+      String lastName,
+      String birthday,
+      String gender,
+      String role) async {
+    print("username: " + username + "email: " + email);
     return await FirebaseFirestore.instance
         .collection('users')
-        .doc(id)
-        .update({'username': usernameController.text.trim(), 'email': emailController.text.trim(),
-      'first name': firstNameController.text.trim(), 'last name': lastNameController.text.trim(),
-      'birthday': birthday, 'gender': gender, 'status': 'aktiv','role': role,})
+        .doc(uid)
+        .update({
+          'username': username,
+          'email': email,
+          'first name': firstName,
+          'last name': lastName,
+          'birthday': birthday,
+          'gender': gender,
+          'status': 'aktiv',
+          'role': role,
+        })
         .then((value) => print("User Updated"))
         .catchError((error) => print("Failed to update user: $error"));
   }
 
   // update user especially made for changing status in the user tables (input: id and the value of the changed status)
-  Future <void> updateUserStatus(String id, String status )async{
+  Future<void> updateUserStatus(String id, String status) async {
     return await FirebaseFirestore.instance
         .collection('users')
         .doc(id)
@@ -159,40 +183,44 @@ class AuthProvider with ChangeNotifier {
   }
 
   // input: emailController -> get the user data (used in registration, login and user_administration -> check if user with this email already exist)
-  Future<Map<String, dynamic>> getUserByEmail() async {
+  Future<Map<String, dynamic>> getUserByEmail(String email) async {
     var userData;
     try {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: emailController.text.trim())
-        .get()
-        .then((QuerySnapshot docs) {
-
-            if (docs.docs.isNotEmpty){
-              print('test not empty + emailcontroller: '+emailController.text.trim() );
-            userData = docs.docs[0].data();
-          }
-    });
-    return userData;
-  }catch (e) {print('Fehler getUserByEmail: '+e.toString());}}
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get()
+          .then((QuerySnapshot docs) {
+        if (docs.docs.isNotEmpty) {
+          print('test not empty + emailcontroller: ' + email);
+          userData = docs.docs[0].data();
+        }
+      });
+      return userData;
+    } catch (e) {
+      print('Fehler getUserByEmail: ' + e.toString());
+    }
+  }
 
   Future<Map<String, dynamic>> getUserByEmailInput(String email) async {
     var userData;
     try {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get()
-        .then((QuerySnapshot docs) {
-
-          print('okokoko');
-      if (docs.docs.isNotEmpty){
-        userData = docs.docs[0].data();
-        print('getUserByEmailInput not empty: role is ' + userData['role']);
-      }
-    });
-    return userData;
-  }catch (e) {print('Fehler getUserByEmail: '+e.toString());}}
+      await FirebaseFirestore.instance
+          .collection('users')
+          .where('email', isEqualTo: email)
+          .get()
+          .then((QuerySnapshot docs) {
+        print('okokoko');
+        if (docs.docs.isNotEmpty) {
+          userData = docs.docs[0].data();
+          print('getUserByEmailInput not empty: role is ' + userData['role']);
+        }
+      });
+      return userData;
+    } catch (e) {
+      print('Fehler getUserByEmail: ' + e.toString());
+    }
+  }
 
   Future<Map<String, dynamic>> getUserByUid(String uid) async {
     var userData;
@@ -201,8 +229,7 @@ class AuthProvider with ChangeNotifier {
         .where('uid', isEqualTo: uid)
         .get()
         .then((QuerySnapshot docs) {
-
-      if (docs.docs.isNotEmpty){
+      if (docs.docs.isNotEmpty) {
         print('getUserByUid not empty');
         userData = docs.docs[0].data();
       }
@@ -241,15 +268,20 @@ class AuthProvider with ChangeNotifier {
 
   // delete a user from FirebaseFirestore -> not in use because we can't delete the user from authFirebase
   static Future deleteUser(String uid) async {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .delete();
+    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
   }
 
   // signUp a user in the database (auth and firestore) - won't get auto logged in because of second instance
   // used as admin to create a user with a choosen role - in Benutzerverwaltung
-  Future<bool> signUpUserAdmin(String birthday, String gender, String role) async {
+  Future<bool> signUpUserAdmin(
+      String username,
+      String email,
+      String password,
+      String firstName,
+      String lastName,
+      String birthday,
+      String gender,
+      String role) async {
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
@@ -260,24 +292,24 @@ class AuthProvider with ChangeNotifier {
       );
 
       try {
-        UserCredential credential = await FirebaseAuth.instanceFor(app: secondaryApp)
-            .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
-          //User user = result.user;
-          _userServices.createUser(
-            uid: credential.user.uid,
-            username: usernameController.text.trim(),
-            email: emailController.text.trim(),
-            firstName: firstNameController.text.trim(),
-            lastName: lastNameController.text.trim(),
-            birthday: birthday,
-            gender: gender,
-            status: 'aktiv',
-            role: role,
-          );
+        UserCredential credential = await FirebaseAuth.instanceFor(
+                app: secondaryApp)
+            .createUserWithEmailAndPassword(email: email, password: password);
+        //User user = result.user;
+        _userServices.createUser(
+          uid: credential.user.uid,
+          username: username,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          birthday: birthday,
+          gender: gender,
+          status: 'aktiv',
+          role: role,
+        );
 
-        if (credential.user == null) throw 'An error occured. Please try again.';
+        if (credential.user == null)
+          throw 'An error occured. Please try again.';
         await credential.user.sendEmailVerification();
         print('send verfication');
         await secondaryApp.delete();
@@ -295,10 +327,10 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-
   // signUp a user in the database (auth and firestore) - won't get auto logged in because of second instance
   // used in registration
-  Future<bool> signUpUser(String birthday, String gender) async {
+  Future<bool> signUpUser(String username, String email, String password,
+      String firstName, String lastName, String birthday, String gender) async {
     try {
       _status = Status.Authenticating;
       notifyListeners(); //changing status
@@ -309,28 +341,30 @@ class AuthProvider with ChangeNotifier {
       );
 
       try {
-      UserCredential credential = await FirebaseAuth.instanceFor(app: secondaryApp)
-          .createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim()).then((result) async {
-        //User user = result.user;
-        _userServices.createUser(
-          uid: result.user.uid,
-          username: usernameController.text.trim(),
-          email: emailController.text.trim(),
-          firstName: firstNameController.text.trim(),
-          lastName: lastNameController.text.trim(),
-          birthday: birthday,
-          gender: gender,
-          status: 'aktiv',
-          role: 'User',
-        );});
+        UserCredential credential = await FirebaseAuth.instanceFor(
+                app: secondaryApp)
+            .createUserWithEmailAndPassword(email: email, password: password)
+            .then((result) async {
+          //User user = result.user;
+          _userServices.createUser(
+            uid: result.user.uid,
+            username: username,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            birthday: birthday,
+            gender: gender,
+            status: 'aktiv',
+            role: 'User',
+          );
+        });
 
-      if (credential.user == null) throw 'An error occured. Please try again.';
-      await credential.user.sendEmailVerification();
-    } on FirebaseAuthException catch (e) {
-      print(e);
-    }
+        if (credential.user == null)
+          throw 'An error occured. Please try again.';
+        await credential.user.sendEmailVerification();
+      } on FirebaseAuthException catch (e) {
+        print(e);
+      }
       await secondaryApp.delete();
 
       return true;
@@ -349,23 +383,17 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     return Future.delayed(Duration.zero);
   }
-  // clear all controllers - used after every click on a button
-  void clearController() {
-    usernameController.text = '';
-    emailController.text = '';
-    passwordController.text = '';
-    passwordConfirmedController.text = '';
-    firstNameController.text = '';
-    lastNameController.text = '';
-  }
 
-  Future<void> reloadUserModel() async {  //reloading user data
+  Future<void> reloadUserModel() async {
+    //reloading user data
     _userModel = await _userServices.getUserById(user.uid);
     notifyListeners();
   }
 
-  String validateEmail(String email) { //validate the email textfield
-    RegExp regex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  String validateEmail(String email) {
+    //validate the email textfield
+    RegExp regex = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     if (email.isEmpty) {
       return 'Bitte gib eine E-Mail ein.';
     } else {
@@ -379,7 +407,8 @@ class AuthProvider with ChangeNotifier {
 
   // at least one upper case, lower case, one digit, one Special character and at least 8  and max 18 characters in length
   String validatePassword(String password) {
-    RegExp regex = RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,18}$');
+    RegExp regex = RegExp(
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,18}$');
     if (password.isEmpty) {
       return 'Bitte gib ein Passwort ein.';
     } else {
@@ -404,9 +433,12 @@ class AuthProvider with ChangeNotifier {
       }
     }
   }
+
   // validate the name textfield
-  String validateName(String name) { // so modifizieren, dass (^[A-Z]*) = erster buchstabe immer groß
-    RegExp regex = RegExp(r"(^[A-Z]*)^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$");
+  String validateName(String name) {
+    // so modifizieren, dass (^[A-Z]*) = erster buchstabe immer groß
+    RegExp regex = RegExp(
+        r"(^[A-Z]*)^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{1,}$");
     if (name.isEmpty) {
       return 'Bitte gib einen Namen ein.';
     } else {
@@ -417,5 +449,4 @@ class AuthProvider with ChangeNotifier {
       }
     }
   }
-
 }

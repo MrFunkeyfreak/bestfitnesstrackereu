@@ -23,28 +23,29 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
   Future passwordReset() async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-          email: _emailController.text.trim());
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text.trim());
       showDialog(
-          context: context,builder: (context){
-        return AlertDialog(
-          content: Text(
-            'Eine E-Mail zum zurücksetzen des Passwortes ist versendet worden. \n Überprüfe dein Postfach!',
-            textAlign: TextAlign.center,
-          ),
-        );
-      });
-    } on FirebaseAuthException catch (e){
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(
+                'Eine E-Mail zum zurücksetzen des Passwortes ist versendet worden. \n Überprüfe dein Postfach!',
+                textAlign: TextAlign.center,
+              ),
+            );
+          });
+    } on FirebaseAuthException catch (e) {
       print(e);
       showDialog(
-          context: context,builder: (context){
-        return AlertDialog(
-          content: Text(e.message.toString()),
-        );
-      });
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
+          });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -69,30 +70,31 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
-
-                SizedBox(height: 15,),
-
+                SizedBox(
+                  height: 15,
+                ),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
                       labelText: "E-Mail",
                       hintText: "abc@domain.com",
-                      suffixIcon: Icon(Icons.mail_outline,),
+                      suffixIcon: Icon(
+                        Icons.mail_outline,
+                      ),
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
+                          borderRadius: BorderRadius.circular(20))),
                 ),
-
-                SizedBox(height: 15,),
-
+                SizedBox(
+                  height: 15,
+                ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       passwordReset();
                       //Navigator.of(context).pushNamed();
                     },
                     child: Container(
-                        decoration: BoxDecoration(color: Colors.deepPurple,
+                        decoration: BoxDecoration(
+                            color: Colors.deepPurple,
                             borderRadius: BorderRadius.circular(20)),
                         alignment: Alignment.center,
                         width: double.maxFinite,
@@ -101,41 +103,40 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           "Passwort zurücksetzen",
                           style: TextStyle(
                             color: Colors.white,
-                          ),)
-                    )
+                          ),
+                        ))),
+                SizedBox(
+                  height: 15,
                 ),
-
-                SizedBox(height: 15,),
-
                 Row(
                   children: [
                     Expanded(
                         child: Divider(
-                          height: 50,
-                          color: Colors.grey[500],
-                        )
-                    ),
+                      height: 50,
+                      color: Colors.grey[500],
+                    )),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Text('Du hast dein Passwort \nbereits zurückgesetzt?'),
+                      child: Text(
+                          'Du hast dein Passwort \nbereits zurückgesetzt?'),
                     ),
                     Expanded(
                         child: Divider(
-                          height: 50,
-                          color: Colors.grey[500],
-                        )
-                    ),
+                      height: 50,
+                      color: Colors.grey[500],
+                    )),
                   ],
                 ),
-
-                SizedBox(height: 15,),
-
+                SizedBox(
+                  height: 15,
+                ),
                 InkWell(
-                    onTap: (){
+                    onTap: () {
                       Navigator.of(context).pushNamed(AuthenticationPageRoute);
                     },
                     child: Container(
-                        decoration: BoxDecoration(color: Colors.deepPurple,
+                        decoration: BoxDecoration(
+                            color: Colors.deepPurple,
                             borderRadius: BorderRadius.circular(20)),
                         alignment: Alignment.center,
                         width: double.maxFinite,
@@ -144,9 +145,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                           "Zurück zum Login",
                           style: TextStyle(
                             color: Colors.white,
-                          ),)
-                    )
-                ),
+                          ),
+                        ))),
               ],
             ),
           ),

@@ -13,16 +13,14 @@ const String UsersAdministrationRoute = "/adminverwaltung";
 const String UsersScientistRoute = "/scientistverwaltung";
 const String AccessDeniedRoute = "/access_denied";
 
-
-
-class MenuItemRoutes{
+class MenuItemRoutes {
   final String name;
   final String route;
 
   MenuItemRoutes(this.name, this.route);
 }
 
-List <MenuItemRoutes> sideMenuItems = [
+List<MenuItemRoutes> sideMenuItems = [
   MenuItemRoutes('Information', InformationRoute),
   MenuItemRoutes('Neuigkeiten', NeuigkeitenRoute),
   MenuItemRoutes('Login', AuthenticationPageRoute),

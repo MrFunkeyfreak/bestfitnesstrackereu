@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../provider/auth.dart';
 import '../../../provider/users_table.dart';
 import '../../registration/widgets/radiobuttons.dart';
+import 'package:intl/intl.dart';
+
 
 // Button which edit an User in the database (and table)
 
@@ -18,71 +20,85 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
   String genderSelected;
   String roleSelected;
 
-  List<Map<String,dynamic>> selectedRows;
+  List<Map<String, dynamic>> selectedRows;
   String selectedUid;
 
   String _birthDateInString;
   DateTime birthDate;
-  bool isDateSelected= false;
+  bool isDateSelected = true;
 
-  static final List<GlobalKey<FormState>> _formKeys = [
-    GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(), GlobalKey<FormState>(),
-  ];
+  static GlobalKey<FormState> _formKeys = GlobalKey<FormState>();
+
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordConfirmedController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
 
   @override
   void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    passwordConfirmedController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     super.dispose();
   }
 
+  // clear all controllers - used after every click on a button
+  void clearController() {
+    usernameController.text = '';
+    emailController.text = '';
+    passwordController.text = '';
+    passwordConfirmedController.text = '';
+    firstNameController.text = '';
+    lastNameController.text = '';
+  }
 
   @override
   Widget build(BuildContext context) {
     final UsersTable userTable = Provider.of<UsersTable>(context);
-    final AuthProvider authproviderInstance = Provider.of<AuthProvider>(context);
+    final AuthProvider authproviderInstance =
+        Provider.of<AuthProvider>(context);
+    _formKeys = GlobalKey<FormState>(debugLabel: '_editbutton admin');
 
     return TextButton.icon(
-      onPressed: () =>
-      { selectedRows = userTable.selecteds,    //get the selected row from the user_administration_desktop.dart
-        if(selectedRows.length == 1) {
+      onPressed: () => {
+        selectedRows = userTable
+            .selecteds, //get the selected row from the user_administration_desktop.dart
+        if (selectedRows.length == 1)
+          {
+            //change the value of the TextFieldsControllers to the data of the selected user
+            usernameController.value = TextEditingValue(
+                text: selectedRows[0]['username'],
+                selection: TextSelection.fromPosition(
+                    TextPosition(offset: selectedRows[0]['username'].length))),
 
-          //change the value of the TextFieldsControllers to the data of the selected user
-          authproviderInstance.usernameController.value = TextEditingValue(
-              text: selectedRows[0]['username'],
-              selection: TextSelection.fromPosition(
-                  TextPosition(offset: selectedRows[0]['username'].length)
-              )
-          ),
+            emailController.value = TextEditingValue(
+                text: selectedRows[0]['email'],
+                selection: TextSelection.fromPosition(
+                    TextPosition(offset: selectedRows[0]['email'].length))),
 
-          authproviderInstance.emailController.value = TextEditingValue(
-            text: selectedRows[0]['email'],
-            selection: TextSelection.fromPosition(
-                TextPosition(offset: selectedRows[0]['email'].length)
-            )
-        ),
+            firstNameController.value = TextEditingValue(
+                text: selectedRows[0]['first name'],
+                selection: TextSelection.fromPosition(TextPosition(
+                    offset: selectedRows[0]['first name'].length))),
 
-          authproviderInstance.firstNameController.value = TextEditingValue(
-            text: selectedRows[0]['first name'],
-            selection: TextSelection.fromPosition(
-                TextPosition(offset: selectedRows[0]['first name'].length)
-            )
-        ),
+            lastNameController.value = TextEditingValue(
+                text: selectedRows[0]['last name'],
+                selection: TextSelection.fromPosition(
+                    TextPosition(offset: selectedRows[0]['last name'].length))),
 
-          authproviderInstance.lastNameController.value = TextEditingValue(
-            text: selectedRows[0]['last name'],
-            selection: TextSelection.fromPosition(
-                TextPosition(offset: selectedRows[0]['last name'].length)
-            )
-        ),
+            genderSelected = selectedRows[0]['gender'],
 
-          genderSelected = selectedRows[0]['gender'],
+            roleSelected = selectedRows[0]['role'],
 
-          roleSelected = selectedRows[0]['role'],
-
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return StatefulBuilder(
-                  builder: (context, setState) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return StatefulBuilder(builder: (context, setState) {
                     return AlertDialog(
                       content: Stack(
                         clipBehavior: Clip.none,
@@ -101,135 +117,124 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                             ),
                           ),
                           Form(
+                            key: _formKeys,
+                            autovalidateMode: AutovalidateMode.always,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text("Benutzer bearbeiten",
                                         style: TextStyle(
                                             fontSize: 30,
-                                            fontWeight: FontWeight
-                                                .bold
-                                        )),
+                                            fontWeight: FontWeight.bold)),
                                   ],
                                 ),
-
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Form(
-                                    key: _formKeys[0],
-                                    autovalidateMode: AutovalidateMode.always,
-                                    child: TextFormField(
+                                  child: TextFormField(
                                       validator: (username) {
-                                        print(authproviderInstance.validateUsername(username));
-                                        return authproviderInstance.validateUsername(username);
+                                        print(authproviderInstance
+                                            .validateUsername(username));
+                                        return authproviderInstance
+                                            .validateUsername(username);
                                       },
-                                      controller: authproviderInstance.usernameController,
+                                      controller: usernameController,
                                       decoration: InputDecoration(
                                           labelText: "Benutzername",
                                           hintText: "Max123",
                                           border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(20)
-                                          )
-                                      ),
-                                    ),),
-                                ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
+                                    ),
+                                  ),
 
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Form(
-                                    key: _formKeys[1],
-                                    autovalidateMode: AutovalidateMode.always,
                                     child: TextFormField(
-                                      validator: (email) => EmailValidator.validate(email) ? null : "Bitte gib eine gültige E-Mail an.",
-                                      controller: authproviderInstance.emailController,
+                                      validator: (email) => EmailValidator
+                                              .validate(email)
+                                          ? null
+                                          : "Bitte gib eine gültige E-Mail an.",
+                                      controller: emailController,
                                       decoration: InputDecoration(
                                           labelText: "E-Mail",
                                           hintText: "abc@domain.com",
                                           border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(20)
-                                          )
-                                      ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
                                     ),
-                                  ),),
+                                  ),
 
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Form(
-                                    key: _formKeys[2],
-                                    autovalidateMode: AutovalidateMode.always,
-                                    child: TextFormField(
+                                  child: TextFormField(
                                       validator: (firstName) {
-                                        print(authproviderInstance.validateName(firstName));
-                                        return authproviderInstance.validateName(firstName);
+                                        print(authproviderInstance
+                                            .validateName(firstName));
+                                        return authproviderInstance
+                                            .validateName(firstName);
                                       },
-                                      controller: authproviderInstance.firstNameController,
+                                      controller: firstNameController,
                                       decoration: InputDecoration(
                                           labelText: "Vorname",
                                           hintText: "Max",
                                           border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(20)
-                                          )
-                                      ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
                                     ),
                                   ),
-                                ),
 
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Form(
-                                    key: _formKeys[3],
-                                    autovalidateMode: AutovalidateMode.always,
                                     child: TextFormField(
                                       validator: (lastName) {
-                                        print(authproviderInstance.validateName(lastName));
-                                        return authproviderInstance.validateName(lastName);
+                                        print(authproviderInstance
+                                            .validateName(lastName));
+                                        return authproviderInstance
+                                            .validateName(lastName);
                                       },
-                                      controller: authproviderInstance.lastNameController,
+                                      controller: lastNameController,
                                       decoration: InputDecoration(
                                           labelText: "Nachname",
                                           hintText: "Mustermann",
                                           border: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(20)
-                                          )
-                                      ),
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
                                     ),
                                   ),
-                                ),
 
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
-
                                     //SizedBox(width: 11,),
 
                                     Text(
                                       "Geburtsdatum:",
-                                      style: TextStyle(
-                                          fontSize: 18),
+                                      style: TextStyle(fontSize: 18),
                                     ),
 
                                     GestureDetector(
                                       child: new Icon(
                                         Icons.calendar_today,
-                                        size: 30,),
+                                        size: 30,
+                                      ),
                                       onTap: () async {
-                                        final DateTime datePick = await showDatePicker(
+                                        final DateTime datePick =
+                                            await showDatePicker(
                                           locale: const Locale('de'),
                                           context: context,
-                                          initialDate: new DateTime
-                                              .now(),
-                                          firstDate: new DateTime(
-                                              1900),
-                                          lastDate: new DateTime(
-                                              2100),
-                                          initialEntryMode: DatePickerEntryMode.input,
-                                          errorFormatText: 'Gib ein Datum mit dem Format Tag/Monat/Jahr ein',
-                                          errorInvalidText: 'Gib ein realistisches Datum ein',
+                                          initialDate: DateFormat("dd/MM/yyyy", 'de').parseStrict(selectedRows[0]['birthday']),
+                                          firstDate: new DateTime(1900),
+                                          lastDate: new DateTime(2100),
+                                          initialEntryMode:
+                                              DatePickerEntryMode.input,
+                                          errorFormatText:
+                                              'Gib ein Datum mit dem Format Tag/Monat/Jahr ein',
+                                          errorInvalidText:
+                                              'Gib ein realistisches Datum ein',
                                           fieldLabelText: 'Geburtstag',
                                           fieldHintText: 'TT/MM/YYYY',
                                         );
@@ -240,141 +245,159 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                                             isDateSelected = true;
 
                                             // birthdate in string
-                                            _birthDateInString = "${birthDate.day}/${birthDate.month}/${birthDate.year}";
-                                            print('' +_birthDateInString);
+                                            _birthDateInString =
+                                                "${birthDate.day}/${birthDate.month}/${birthDate.year}";
+                                            print('' + _birthDateInString);
                                           });
                                         }
                                       },
                                     ),
                                   ],
                                 ),
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
-
                                     Text(
                                       "Geschlecht:",
-                                      style: TextStyle(
-                                          fontSize: 18),
+                                      style: TextStyle(fontSize: 18),
                                       textAlign: TextAlign.start,
                                     ),
 
-                                    SizedBox(width: 10,),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
 
                                     // using the radiobuttons in widgets (registration)
                                     RadioButtonGender(
-                                        0, 'Männlich', genderSelected, (newValue) {
+                                        0, 'Männlich', genderSelected,
+                                        (newValue) {
                                       print(newValue);
-                                      setState(() =>
-                                      genderSelected = newValue);
+                                      setState(() => genderSelected = newValue);
                                     }),
                                     RadioButtonGender(
-                                        1, 'Weiblich', genderSelected, (newValue) {
+                                        1, 'Weiblich', genderSelected,
+                                        (newValue) {
                                       print(newValue);
-                                      setState(() =>
-                                      genderSelected = newValue);
+                                      setState(() => genderSelected = newValue);
                                     }),
                                   ],
                                 ),
-
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Text(
                                       "Rolle:",
-                                      style: TextStyle(
-                                          fontSize: 18),
+                                      style: TextStyle(fontSize: 18),
                                       textAlign: TextAlign.start,
                                     ),
 
-                                    SizedBox(width: 10,),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
 
                                     // using the radiobuttons in widgets (registration)
-                                    RadioButtonRole(
-                                        0, 'User', roleSelected, (newValue) {
+                                    RadioButtonRole(0, 'User', roleSelected,
+                                        (newValue) {
                                       print(newValue);
-                                      setState(() =>
-                                      roleSelected = newValue);
+                                      setState(() => roleSelected = newValue);
                                     }),
                                     RadioButtonRole(
-                                        1, 'Wissenschaftler', roleSelected, (newValue) {
+                                        1, 'Wissenschaftler', roleSelected,
+                                        (newValue) {
                                       print(newValue);
-                                      setState(() =>
-                                      roleSelected = newValue);
+                                      setState(() => roleSelected = newValue);
                                     }),
-                                    RadioButtonRole(
-                                        2, 'Admin', roleSelected, (newValue) {
+                                    RadioButtonRole(2, 'Admin', roleSelected,
+                                        (newValue) {
                                       print(newValue);
-                                      setState(() =>
-                                      roleSelected = newValue);
+                                      setState(() => roleSelected = newValue);
                                     }),
-
                                   ],
                                 ),
-
                                 Padding(
-                                  padding: const EdgeInsets.all(
-                                      8.0),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: ElevatedButton(
                                     child: Text("Bearbeiten"),
                                     onPressed: () async {
                                       //selectedRows = userTable.selecteds;
 
-                                      final usernameFormkey = _formKeys[0].currentState;
-                                      final emailFormkey = _formKeys[1].currentState;
-                                      final firstNameFormkey = _formKeys[2].currentState;
-                                      final lastNameFormkey = _formKeys[3].currentState;
+                                      if (_formKeys.currentState.validate()) {
 
-                                        if(authproviderInstance.usernameController.text.trim() != null && authproviderInstance.emailController.text.trim() != null
-                                            && authproviderInstance.firstNameController.text.trim() != null && authproviderInstance.lastNameController.text.trim() != null
-                                            && isDateSelected != false && genderSelected != null  && roleSelected != null){
-                                        if (emailFormkey.validate() && usernameFormkey.validate() && firstNameFormkey.validate()
-                                            && lastNameFormkey.validate()){
-                                        selectedUid = selectedRows[0]['uid'];
+                                      if (usernameController.text.trim() != null &&
+                                          emailController.text.trim() != null &&
+                                          firstNameController.text.trim() !=
+                                              null &&
+                                          lastNameController.text.trim() !=
+                                              null &&
+                                          isDateSelected != false &&
+                                          genderSelected != null &&
+                                          roleSelected != null) {
 
-                                        //update the user with the authProviderControllers and the selected role,gender,birthday + the uid
-                                        await authproviderInstance.updateUserEdit(selectedUid,
-                                            _birthDateInString,genderSelected, roleSelected);
+                                          selectedUid = selectedRows[0]['uid'];
 
-                                        Navigator.of(context).pop();
-                                        userTable.selecteds.clear();   //clear the selected row variable
-                                        userTable.initializeData();    //initializeData to update the table
-                                      }else{
-                                          print('validate notgoodatall');
-                                          showDialog(context: context, builder: (BuildContext context){
-                                            return AlertDialog(
-                                              title: Text("Error: Bitte überprüfe, ob alle deine Eingaben ein gültiges Format aufweisen."),
-                                              actions: [
-                                                TextButton(
-                                                  child: Text("Ok"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              ],
-                                            );
-                                          });
-                                        }
-                                      }// not all Textfields/Buttons are filled
-                                        else {
-                                          showDialog(context: context, builder: (BuildContext context){
-                                            return AlertDialog(
-                                              title: Text("Error: Editieren gescheitert! Bitte alle Felder ausfüllen."),
-                                              actions: [
-                                                TextButton(
-                                                  child: Text("Ok"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              ],
-                                            );
-                                          });
-                                          return;
-                                        }
+                                          //update the user with the authProviderControllers and the selected role,gender,birthday + the uid
+                                          await authproviderInstance
+                                              .updateUserEdit(
+                                                  selectedUid,
+                                                  usernameController.text
+                                                      .trim(),
+                                                  emailController.text.trim(),
+                                                  firstNameController.text
+                                                      .trim(),
+                                                  lastNameController.text
+                                                      .trim(),
+                                                  _birthDateInString,
+                                                  genderSelected,
+                                                  roleSelected);
+
+                                          Navigator.of(context).pop();
+                                          userTable.selecteds
+                                              .clear(); //clear the selected row variable
+                                          userTable
+                                              .initializeData(); //initializeData to update the table
+                                        } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "Error: Editieren gescheitert! Bitte alle Felder ausfüllen."),
+                                                actions: [
+                                                  TextButton(
+                                                    child: Text("Ok"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                        return;
+                                      }
+                                      } // not all Textfields/Buttons are filled
+                                      else {
+                                        print('validate notgoodatall');
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "Error: Bitte überprüfe, ob alle deine Eingaben ein gültiges Format aufweisen."),
+                                                actions: [
+                                                  TextButton(
+                                                    child: Text("Ok"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  )
+                                                ],
+                                              );
+                                            });
+                                      }
                                     },
                                   ),
                                 )
@@ -385,37 +408,36 @@ class _EditButtonAdminState extends State<EditButtonAdmin> {
                       ),
                     );
                   });
-            })
-      } else {
-          showDialog(context: context, builder: (BuildContext context){
-            return AlertDialog(
-              title: Text("Error: Bitte wähle genau einen User aus."),
-              actions: [
-                TextButton(
-                  child: Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          }),
-        }
+                })
+          }
+        else
+          {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Error: Bitte wähle genau einen User aus."),
+                    actions: [
+                      TextButton(
+                        child: Text("Ok"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ],
+                  );
+                }),
+          }
       },
       icon: Icon(
         IconData(0xf00d, fontFamily: 'MaterialIcons'),
-        color: Colors.black,),
-      label: Text("Bearbeiten",
-          style: TextStyle(
-              color: Colors.black
-          )
+        color: Colors.black,
       ),
+      label: Text("Bearbeiten", style: TextStyle(color: Colors.black)),
       style: ButtonStyle(
-        backgroundColor:
-        MaterialStateProperty.all<Color>(Colors.grey),
-        padding: MaterialStateProperty.all<EdgeInsets>(
-            EdgeInsets.all(10)),
+        backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
+        padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
       ),
     );
-    }
+  }
 }

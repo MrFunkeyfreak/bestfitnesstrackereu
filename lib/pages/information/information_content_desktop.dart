@@ -14,8 +14,8 @@ class InformationContentDesktop extends StatelessWidget {
         InformationContentDetails(),
         Expanded(
           child: Center(
-            //child: CallToAction('Join our Fitnesstracker now!'),
-          ),
+              //child: CallToAction('Join our Fitnesstracker now!'),
+              ),
         )
       ],
     );

@@ -27,23 +27,31 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case NeuigkeitenRoute:
       return _getPageRoute(LayoutTemplate(child1: NeuigkeitenView()), settings);
     case AuthenticationPageRoute:
-      return _getPageRoute(LayoutTemplate(child1: AuthenticationPage()), settings);
+      return _getPageRoute(
+          LayoutTemplate(child1: AuthenticationPage()), settings);
     case RegristrationUserRoute:
-      return _getPageRoute(LayoutTemplate(child1: RegistrationUsersView()), settings);
+      return _getPageRoute(
+          LayoutTemplate(child1: RegistrationUsersView()), settings);
     case RegristrationScientistRoute:
-      return _getPageRoute(LayoutTemplate(child1: RegistrationScientistView()), settings);     // not in use
+      return _getPageRoute(LayoutTemplate(child1: RegistrationScientistView()),
+          settings); // not in use
     case RegristrationAdminRoute:
-      return _getPageRoute(LayoutTemplate(child1: RegistrationAdminsView()), settings);        // not in use
+      return _getPageRoute(LayoutTemplate(child1: RegistrationAdminsView()),
+          settings); // not in use
     case DashboardRoute:
       return _getPageRoute(LayoutTemplate(child1: DashboardView()), settings);
     case ForgotPasswordRoute:
-      return _getPageRoute(LayoutTemplate(child1: ForgotPasswordView()), settings);
+      return _getPageRoute(
+          LayoutTemplate(child1: ForgotPasswordView()), settings);
     case ProfileRoute:
-      return _getPageRoute(LayoutTemplate(child1: ProfileView()), settings);                   // not in use
+      return _getPageRoute(
+          LayoutTemplate(child1: ProfileView()), settings); // not in use
     case UsersAdministrationRoute:
-      return _getPageRoute(LayoutTemplate(child1: UserAdministrationViewAdmin()), settings);
+      return _getPageRoute(
+          LayoutTemplate(child1: UserAdministrationViewAdmin()), settings);
     case UsersScientistRoute:
-      return _getPageRoute(LayoutTemplate(child1: UserAdministrationViewScientist()), settings);
+      return _getPageRoute(
+          LayoutTemplate(child1: UserAdministrationViewScientist()), settings);
     case AccessDeniedRoute:
       return _getPageRoute(LayoutTemplate(child1: AccessDenied()), settings);
     default:
@@ -53,31 +61,32 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
 PageRoute _getPageRoute(Widget child, RouteSettings settings) {
   return _FadeRoute(
-    child: child,      //Widget child for displaying the widget/view/page
-    routeName: settings.name    //routeName for named routing
-  );
+      child: child, //Widget child for displaying the widget/view/page
+      routeName: settings.name //routeName for named routing
+      );
 }
 
 class _FadeRoute extends PageRouteBuilder {
-  final Widget child;      //Widget child for returning the widget/view/page
+  final Widget child; //Widget child for returning the widget/view/page
   final String routeName;
   _FadeRoute({this.child, this.routeName})
       : super(
-    settings: RouteSettings(name: routeName),     //setting routeName
-    pageBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        ) => child,
-    transitionsBuilder: (
-        BuildContext context,
-        Animation<double> animation,
-        Animation<double> secondaryAnimation,
-        Widget child,
-        ) =>
-        FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-  );
+          settings: RouteSettings(name: routeName), //setting routeName
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              child,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
 }

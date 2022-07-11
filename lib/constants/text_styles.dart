@@ -11,9 +11,7 @@ TextStyle titleTextStyle(DeviceScreenType deviceScreenType) {
     titleSize = 80;
   }
   return TextStyle(
-      fontWeight: FontWeight.w800,
-      height: 0.9,
-      fontSize: titleSize);
+      fontWeight: FontWeight.w800, height: 0.9, fontSize: titleSize);
 }
 
 // Return the style for description text on a page based on the [deviceScreenType] passed in.

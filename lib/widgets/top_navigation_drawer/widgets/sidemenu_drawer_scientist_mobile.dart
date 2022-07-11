@@ -6,18 +6,17 @@ import '../sidemenu_drawer_header.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<String> currentUserEmail() async {    // get the email of the currentUser
+Future<String> currentUserEmail() async {
+  // get the email of the currentUser
   final String email = await auth.currentUser.email;
 
   return email;
 }
 
 class SideMenuDrawerScientistMobile extends StatelessWidget {
-
 //drawer for hamburgericon (menu) in mobile screen - used in layout_template.dart
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       child: Container(
         width: 300,
@@ -30,7 +29,7 @@ class SideMenuDrawerScientistMobile extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:<Widget> [
+          children: <Widget>[
             SideMenuDrawerHeader(),
             TopNavBarItem(
               'Userverwaltung',
@@ -42,11 +41,8 @@ class SideMenuDrawerScientistMobile extends StatelessWidget {
               DashboardRoute,
               icon: IconData(0xf0639, fontFamily: 'MaterialIcons'),
             ),
-            TopNavBarItem(
-                'Informationen',
-                DashboardRoute,
-                icon: IconData(0xe3b2, fontFamily: 'MaterialIcons')
-            ),
+            TopNavBarItem('Informationen', DashboardRoute,
+                icon: IconData(0xe3b2, fontFamily: 'MaterialIcons')),
             TopNavBarItem(
               'Neuigkeiten',
               DashboardRoute,
@@ -59,11 +55,9 @@ class SideMenuDrawerScientistMobile extends StatelessWidget {
             Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-
                   SizedBox(
                     width: 30,
                   ),
-
                   TextButton.icon(
                     onPressed: () async => {
                       await FirebaseAuth.instance.signOut(),
@@ -76,42 +70,41 @@ class SideMenuDrawerScientistMobile extends StatelessWidget {
                       size: 20,
                     ),
                     label: Text("Logout",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18
-                        )
-                    ),
+                        style: TextStyle(color: Colors.black, fontSize: 18)),
                     style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.white),
+                          MaterialStateProperty.all<Color>(Colors.white),
                       padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(10)),
                     ),
                   ),
-
-                  SizedBox(width: 40,),
-
-                  FutureBuilder<String>(     // displaying the email of the current user
+                  SizedBox(
+                    width: 40,
+                  ),
+                  FutureBuilder<String>(
+                      // displaying the email of the current user
                       future: currentUserEmail(),
                       builder: (_, AsyncSnapshot<String> snapshot) {
-                        if(snapshot.connectionState == ConnectionState.done) {
-                          if (snapshot.hasError){
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
                             return Text('Something went wrong');
                           }
-                          if(snapshot.hasData){
+                          if (snapshot.hasData) {
                             try {
                               return Text('eingeloggt als: \n' + snapshot.data);
-                            } catch (e){ print(e);}
+                            } catch (e) {
+                              print(e);
+                            }
                           }
                         } else {
                           return CircularProgressIndicator();
                         }
-                      }
-                  ),
+                      }),
                 ]),
 
-            SizedBox(height: 30,),
-
+            SizedBox(
+              height: 30,
+            ),
           ],
         ),
       ),

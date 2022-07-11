@@ -7,7 +7,7 @@ import 'neuigkeiten_content_mobile.dart';
 // in work Rinor task - at the moment just hard coded sides
 
 class NeuigkeitenView extends StatelessWidget {
-  const NeuigkeitenView ({Key key}) : super(key: key);
+  const NeuigkeitenView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

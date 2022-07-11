@@ -12,7 +12,6 @@ class InformationContentDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
-
         // if the ScreenType is desktop, then text on left side, else center
         var textAlignment;
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {

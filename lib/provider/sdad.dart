@@ -9,12 +9,14 @@ Future<bool> signUpUser(String birthday, String gender) async {
     );
 
     try {
-      UserCredential credential = await FirebaseAuth.instanceFor(app: secondaryApp)
-          .createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim()).then((result) async {
+      UserCredential credential =
+          await FirebaseAuth.instanceFor(app: secondaryApp)
+              .createUserWithEmailAndPassword(
+                  email: emailController.text.trim(),
+                  password: passwordController.text.trim())
+              .then((result) async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("id", result.user.uid);  //userid setzen
+        await prefs.setString("id", result.user.uid); //userid setzen
         _userServices.createUser(
           uid: result.user.uid,
           username: usernameController.text.trim(),
@@ -25,7 +27,8 @@ Future<bool> signUpUser(String birthday, String gender) async {
           gender: gender,
           status: 'aktiv',
           role: 'User',
-        );});
+        );
+      });
 
       if (credential.user == null) throw 'An error occured. Please try again.';
       await credential.user.sendEmailVerification();

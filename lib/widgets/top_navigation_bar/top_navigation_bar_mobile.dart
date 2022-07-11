@@ -10,7 +10,8 @@ import '../../routing/route_names.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<String> currentUserEmail() async {    // get the email of the currentUser
+Future<String> currentUserEmail() async {
+  // get the email of the currentUser
   final String email = await auth.currentUser.email;
 
   return email;
@@ -18,25 +19,26 @@ Future<String> currentUserEmail() async {    // get the email of the currentUser
 
 final AuthProvider authProvider = AuthProvider();
 final user = FirebaseAuth.instance.currentUser;
-  Widget TopNavigationBarMobile(GlobalKey<ScaffoldState> key, BuildContext context) =>
-
-     AppBar(
+Widget TopNavigationBarMobile(
+        GlobalKey<ScaffoldState> key, BuildContext context) =>
+    AppBar(
       iconTheme: IconThemeData(color: Colors.white),
       backgroundColor: Colors.grey,
-      leading:
-          IconButton(
-            icon: Icon(Icons.menu,
-            color: Colors.black,
-            ),
-            onPressed: () {
-              key.currentState.openDrawer();
-            },),
-          title: Row(
-            children: [
-              TopNavBarLogo(),
+      leading: IconButton(
+        icon: Icon(
+          Icons.menu,
+          color: Colors.black,
+        ),
+        onPressed: () {
+          key.currentState.openDrawer();
+        },
+      ),
+      title: Row(
+        children: [
+          TopNavBarLogo(),
 
-              // I tried to implement a log out button at the TopNavigationBar, but I didn't had enough time for this
-              /*
+          // I tried to implement a log out button at the TopNavigationBar, but I didn't had enough time for this
+          /*
               Spacer(),
 
                   if(authProvider.status == Status.Admin || authProvider.status == Status.Scientist)  FutureBuilder<String>(     // displaying the email of the current user
@@ -92,7 +94,6 @@ final user = FirebaseAuth.instance.currentUser;
                       EdgeInsets.all(10)),
                 ),
               ),*/
-            ],
-     ),
-      );
-
+        ],
+      ),
+    );

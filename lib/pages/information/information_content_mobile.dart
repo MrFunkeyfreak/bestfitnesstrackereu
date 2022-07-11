@@ -1,7 +1,6 @@
 import 'package:bestfitnesstrackereu/pages/information/widgets/informations_content_details.dart';
 import 'package:flutter/material.dart';
 
-
 // information page for mobile with InformationContentDetails (input of the page)
 // used in information_view.dart
 

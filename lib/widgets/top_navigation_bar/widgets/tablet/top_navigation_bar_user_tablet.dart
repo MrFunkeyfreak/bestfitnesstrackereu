@@ -13,23 +13,35 @@ class TopNavigationBarUserTablet extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarLogoTablet(),
           //SizedBox(width: 30,),
           //Visibility(child: Text( "BestFitnesstrackerEU", style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal,))),
 
-          Spacer(),      //Space between logo+text and widgets in the center of the row
+          Spacer(), //Space between logo+text and widgets in the center of the row
           TopNavBarItem('Informationen', InformationRoute),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           TopNavBarItem('Neuigkeiten', NeuigkeitenRoute),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
 
           Spacer(), //Space between widgets in the center of the row and end of row
-          SizedBox(width: 40,),
+          SizedBox(
+            width: 40,
+          ),
           TopNavBarItem('Login', AuthenticationPageRoute),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           TopNavBarItem('Teilehmer \n werden', RegristrationUserRoute),
-          SizedBox(width: 40,),
+          SizedBox(
+            width: 40,
+          ),
         ],
       ),
     );

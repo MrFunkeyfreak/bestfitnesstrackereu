@@ -1,3 +1,5 @@
+import 'package:bestfitnesstrackereu/provider/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_table/responsive_table.dart';
 import '../../datamodels/user_model.dart';
@@ -7,7 +9,6 @@ import '../../services/user_services.dart';
 // used for the function of the table
 
 class UsersTable with ChangeNotifier {
-
   List<int> perPages = [10, 20, 50, 100];
   int total = 100;
   int currentPerPage = 100;
@@ -151,7 +152,7 @@ class UsersTable with ChangeNotifier {
   // get all users from the database
   Future _loadFromFirebase() async {
     _users = await _userServices.getAllUsers();
-    _scientist = await _userServices.getAllScientists();
+    _scientist = await _scientistServices.getAllScientists();
   }
 
   // get all the data from the users (_loadFromFirebase safed the data in _users) and safe them in a Map
@@ -201,17 +202,31 @@ class UsersTable with ChangeNotifier {
     mockPullData();
   }
 
+
   mockPullData() async {
-    expanded = List.generate(currentPerPage, (index) => false);  //generate a list of currentpages
+    final AuthProvider authprovider = AuthProvider();
+    expanded = List.generate(
+        currentPerPage, (index) => false); //generate a list of currentpages
     isLoading = true;
     notifyListeners();
-    await _loadFromFirebase();    // get all users from the database
-    sourceOriginal.clear();
-    sourceOriginal.addAll(_getUsersData());
-    usersTableSourceScientist.addAll(_getUsersDataScientist());
+    await _loadFromFirebase(); // get all users from the database
+
+
+      usersTableSourceScientist.clear();
+      usersTableSourceScientist.addAll(_getUsersDataScientist());
+
+      print('test222222');
+      print(authprovider.status);
+      sourceOriginal.clear();
+      sourceOriginal.addAll(_getUsersData());
+
+
+
     sourceFiltered = sourceOriginal;
-    total = sourceFiltered.length;  //total length of the users in the table
-    usersTableSource = sourceFiltered.getRange(0, _users.length).toList();     // return range from 0 to the size of the user in the table/database
+    total = sourceFiltered.length; //total length of the users in the table
+    usersTableSource = sourceFiltered
+        .getRange(0, _users.length)
+        .toList(); // return range from 0 to the size of the user in the table/database
     isLoading = false;
     notifyListeners();
   }
@@ -220,10 +235,12 @@ class UsersTable with ChangeNotifier {
   resetData({start: 0}) async {
     isLoading = true;
     notifyListeners();
-    var _expandedLen = total - start < currentPerPage ? total - start : currentPerPage;
+    var _expandedLen =
+        total - start < currentPerPage ? total - start : currentPerPage;
     expanded = List.generate(_expandedLen as int, (index) => false);
     usersTableSource.clear();
-    usersTableSource = sourceFiltered.getRange(start, start + _expandedLen).toList();
+    usersTableSource =
+        sourceFiltered.getRange(start, start + _expandedLen).toList();
     isLoading = false;
     notifyListeners();
   }
@@ -238,9 +255,9 @@ class UsersTable with ChangeNotifier {
       } else {
         sourceFiltered = sourceOriginal
             .where((data) => data[searchKey]
-            .toString()
-            .toLowerCase()
-            .contains(value.toString().toLowerCase()))
+                .toString()
+                .toLowerCase()
+                .contains(value.toString().toLowerCase()))
             .toList();
       }
       total = sourceFiltered.length;
@@ -255,17 +272,17 @@ class UsersTable with ChangeNotifier {
   }
 
   // sorts the data when an user clicks on the column
-  onSort(dynamic value){
+  onSort(dynamic value) {
     isLoading = true;
     notifyListeners();
     sortColumn = value;
     sortAscending = !sortAscending;
     if (sortAscending) {
-      sourceFiltered.sort((a, b) =>
-          b["$sortColumn"].compareTo(a["$sortColumn"]));
+      sourceFiltered
+          .sort((a, b) => b["$sortColumn"].compareTo(a["$sortColumn"]));
     } else {
-      sourceFiltered.sort((a, b) =>
-          a["$sortColumn"].compareTo(b["$sortColumn"]));
+      sourceFiltered
+          .sort((a, b) => a["$sortColumn"].compareTo(b["$sortColumn"]));
     }
     var _rangeTop = currentPerPage < sourceFiltered.length
         ? currentPerPage
@@ -278,10 +295,10 @@ class UsersTable with ChangeNotifier {
   }
 
   // add or remove the selected row to the "selecteds" variable
-  onSelected(bool value, Map <String, dynamic> item){
+  onSelected(bool value, Map<String, dynamic> item) {
     print("$value  $item ");
     if (value) {
-      selecteds.add(item);     //List of Map <String, dynamic>
+      selecteds.add(item); //List of Map <String, dynamic>
     } else {
       selecteds.removeAt(selecteds.indexOf(item));
     }
@@ -289,7 +306,7 @@ class UsersTable with ChangeNotifier {
   }
 
   // when click on field select all, then select the entire map to selecteds
-  onSelectAll(bool value){
+  onSelectAll(bool value) {
     if (value) {
       selecteds = usersTableSource.map((entry) => entry).toList().cast();
     } else {
@@ -298,7 +315,7 @@ class UsersTable with ChangeNotifier {
     notifyListeners();
   }
 
-  onChanged(int value){
+  onChanged(int value) {
     currentPerPage = value;
     currentPage = 1;
     resetData();
@@ -306,29 +323,27 @@ class UsersTable with ChangeNotifier {
   }
 
   // clicking on previous page
-  previous(){
+  previous() {
     currentPage == 1
         ? null
         : () {
-      var nextSet = currentPage - currentPerPage;
-      currentPage = nextSet > 1 ? nextSet : 1;
-      resetData(start: currentPage - 1);
-    };
+            var nextSet = currentPage - currentPerPage;
+            currentPage = nextSet > 1 ? nextSet : 1;
+            resetData(start: currentPage - 1);
+          };
     notifyListeners();
   }
 
   // clicking on next page
-  next(){
+  next() {
     currentPage + currentPerPage - 1 > total
         ? null
         : () {
-      var nextSet = currentPage + currentPerPage;
+            var nextSet = currentPage + currentPerPage;
 
-      currentPage = nextSet < total
-          ? nextSet
-          : total - currentPerPage;
-      resetData(start: nextSet - 1);
-    };
+            currentPage = nextSet < total ? nextSet : total - currentPerPage;
+            resetData(start: nextSet - 1);
+          };
     notifyListeners();
   }
 
@@ -336,6 +351,4 @@ class UsersTable with ChangeNotifier {
   UsersTable.init() {
     initializeData();
   }
-
-
 }

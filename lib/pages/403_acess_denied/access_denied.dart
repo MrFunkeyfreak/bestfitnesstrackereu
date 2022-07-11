@@ -13,7 +13,10 @@ class AccessDenied extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset("assets/403_error.png", width: 350,),
+            Image.asset(
+              "assets/403_error.png",
+              width: 350,
+            ),
             SizedBox(
               height: 10,
             ),
@@ -26,7 +29,8 @@ class AccessDenied extends StatelessWidget {
                       'Access denied\nZugriff verweigert\n',
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -37,7 +41,8 @@ class AccessDenied extends StatelessWidget {
                       '\nDu hast nicht die nötigen Rechte, \num Zugriff zu dieser Seite zu erhalten',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.normal,),
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ],
                 ),

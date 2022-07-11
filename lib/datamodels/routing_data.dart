@@ -1,4 +1,3 @@
-
 // datamodel for the routing data - get used in string_extension to display the route and queryParameters
 // query parameters are not in use, because I hadn't enough time to insert videos in the website (so always empty)
 class RoutingData {

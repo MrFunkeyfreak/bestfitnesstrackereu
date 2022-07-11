@@ -14,8 +14,8 @@ class NeuigkeitenContentDesktop extends StatelessWidget {
         NeuigkeitenContentDetails(),
         Expanded(
           child: Center(
-            //child: CallToAction('Join our Fitnesstracker now!'),
-          ),
+              //child: CallToAction('Join our Fitnesstracker now!'),
+              ),
         )
       ],
     );

@@ -9,7 +9,6 @@ class CourseDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
-
         var textAlignment;
         if (sizingInformation.deviceScreenType == DeviceScreenType.desktop) {
           textAlignment = TextAlign.left;

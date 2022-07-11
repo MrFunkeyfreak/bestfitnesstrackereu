@@ -6,56 +6,79 @@ import '../../top_navigation_bar_logo.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<String> currentUserEmail() async {    // get the email of the currentUser
+Future<String> currentUserEmail() async {
+  // get the email of the currentUser
   final String email = await auth.currentUser.email;
-  print(email);
 
   return email;
 }
+
+var currentEmail = currentUserEmail();
 
 class TopNavigationBarScientistDesktop extends StatelessWidget {
   const TopNavigationBarScientistDesktop({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       height: 100,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarLogo(),
-          SizedBox(width: 30,),
-          Visibility(child: Text( "Wissenschaftler", style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.normal,))),
+          SizedBox(
+            width: 30,
+          ),
+          Visibility(
+              child: Text("Wissenschaftler",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ))),
 
-          Spacer(),      //Space between logo+text and widgets in the center of the row
-          TopNavBarItem('Userverwaltung', UsersAdministrationRoute),
-          SizedBox(width: 30,),
+          Spacer(), //Space between logo+text and widgets in the center of the row
+          TopNavBarItem('Userverwaltung', UsersScientistRoute),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarItem('Dashboard', DashboardRoute),
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
+          TopNavBarItem('Informationen', DashboardRoute),
+          SizedBox(
+            width: 30,
+          ),
+          TopNavBarItem('Neuigkeiten', DashboardRoute),
 
           Spacer(), //Space between widgets in the center of the row and end of row
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
 
-          FutureBuilder<String>(     // displaying the email of the current user
-              future: currentUserEmail(),
+          FutureBuilder<String>(
+              // displaying the email of the current user
+              future: currentEmail,
               builder: (_, AsyncSnapshot<String> snapshot) {
-                if(snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
                     return Text('Something went wrong');
                   }
-                  if(snapshot.hasData){
+                  if (snapshot.hasData) {
                     return Text('eingeloggt als: \n' + snapshot.data);
                   }
                 } else {
                   return CircularProgressIndicator();
                 }
-              }
-          ),
+              }),
 
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
 
           //sign out the current user - button
           TextButton.icon(
@@ -70,16 +93,11 @@ class TopNavigationBarScientistDesktop extends StatelessWidget {
               size: 20,
             ),
             label: Text("Logout",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14
-                )
-            ),
+                style: TextStyle(color: Colors.black, fontSize: 14)),
             style: ButtonStyle(
-              backgroundColor:
-              MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
-                  EdgeInsets.all(10)),
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              padding:
+                  MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
             ),
           ),
         ],

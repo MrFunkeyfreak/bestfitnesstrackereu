@@ -9,8 +9,8 @@ class TopNavBarItemTablet extends StatelessWidget {
 
   @override
   Widget build(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     return Text(
       model.title,
       style: TextStyle(fontSize: 10),

@@ -28,9 +28,8 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider.value(value: AuthProvider.initialize()),
     ChangeNotifierProvider.value(value: UsersTable.init()),
-  ],
-      child: MyApp()));
-  setupLocator();  // initialize the locator
+  ], child: MyApp()));
+  setupLocator(); // initialize the locator
 }
 
 // setting language to german + setting the navigatorKey,
@@ -52,9 +51,7 @@ class MyApp extends StatelessWidget {
       title: 'BestFitnesstrackerEU',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        textTheme: Theme.of(context).textTheme.apply(
-            fontFamily: 'Open Sans'
-        ),
+        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Open Sans'),
       ),
       navigatorKey: locator<NavigationService>().navigatorKey,
       onGenerateRoute: generateRoute,

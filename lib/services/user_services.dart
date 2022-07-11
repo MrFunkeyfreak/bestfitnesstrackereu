@@ -1,12 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../datamodels/user_model.dart';
 
-
 class UserServices {
   String usersCollection = "users";
 
   // creates a user in the firestore - not in use
-  void createUser({String uid,String username,String email,String firstName,String lastName, String birthday,String gender,String status,String role,}) {
+  void createUser({
+    String uid,
+    String username,
+    String email,
+    String firstName,
+    String lastName,
+    String birthday,
+    String gender,
+    String status,
+    String role,
+  }) {
     FirebaseFirestore.instance.collection(usersCollection).doc(uid).set({
       'uid': uid,
       'username': username,
@@ -29,15 +38,20 @@ class UserServices {
   }
 
   // get the current user logged in
-  Future<UserModel> getUserById(String id) =>
-      FirebaseFirestore.instance.collection(usersCollection).doc(id).get().then((doc) {
+  Future<UserModel> getUserById(String id) => FirebaseFirestore.instance
+          .collection(usersCollection)
+          .doc(id)
+          .get()
+          .then((doc) {
         return UserModel.fromSnapshot(doc);
       });
 
   // get all user from the users collection and add them into a List <UserModel>   -> fromSnapshot get used which is defined in UserModel (datamodels folder)
   // currently used in the tables
-  Future<List<UserModel>> getAllUsers() async =>
-      FirebaseFirestore.instance.collection(usersCollection).get().then((result) {
+  Future<List<UserModel>> getAllUsers() async => await FirebaseFirestore.instance
+          .collection(usersCollection)
+          .get()
+          .then((result) {
         List<UserModel> users = [];
         for (DocumentSnapshot user in result.docs) {
           users.add(UserModel.fromSnapshot(user));
@@ -45,8 +59,8 @@ class UserServices {
         return users;
       });
 
-  Future<List<UserModel>> getAllScientists() async =>
-      FirebaseFirestore.instance.collection(usersCollection)
+  Future<List<UserModel>> getAllScientists() async => await FirebaseFirestore.instance
+          .collection(usersCollection)
           .where('role', isEqualTo: 'User')
           .get()
           .then((result) {

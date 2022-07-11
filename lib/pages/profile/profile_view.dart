@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 // not in use, because we hadn't enough time to implement a login for the users, where they can change their profile
 
 class ProfileView extends StatefulWidget {
-  const ProfileView ({Key key}) : super(key: key);
+  const ProfileView({Key key}) : super(key: key);
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -16,20 +16,22 @@ class _ProfileViewState extends State<ProfileView> {
   final user = FirebaseAuth.instance.currentUser;
 
   // document IDs of user
-  List <String> docIDsUser = [];
+  List<String> docIDsUser = [];
 
   //get docIDsUser
   Future getDocId() async {
     await FirebaseFirestore.instance
         .collection('users')
-        .orderBy('first name', descending: true)  //descending = true, dann ältester oben und jünster unten
+        .orderBy('first name',
+            descending:
+                true) //descending = true, dann ältester oben und jünster unten
         .get()
         .then(
-            (snapshot) => snapshot.docs.forEach((document) {
-              print(document.reference);
-              docIDsUser.add(document.reference.id);  //add docIDsUser to list
-            }),
-    );
+          (snapshot) => snapshot.docs.forEach((document) {
+            print(document.reference);
+            docIDsUser.add(document.reference.id); //add docIDsUser to list
+          }),
+        );
   }
 
   @override
@@ -40,9 +42,8 @@ class _ProfileViewState extends State<ProfileView> {
           constraints: BoxConstraints(maxWidth: 800),
           padding: EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment:  MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               Row(
                 children: [
                   Padding(
@@ -52,35 +53,30 @@ class _ProfileViewState extends State<ProfileView> {
                   Expanded(child: Container()),
                 ],
               ),
-
               Row(
                 children: [
                   Text("Profile from: " + user.email,
-                      style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.bold
-                      )),
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 ],
               ),
-
               SizedBox(
                 height: 30,
               ),
-
               Expanded(
                 child: FutureBuilder(
-                  future: getDocId(),
-                  builder: (context, snapshot) {
-                    return ListView.builder(
+                    future: getDocId(),
+                    builder: (context, snapshot) {
+                      return ListView.builder(
                         itemCount: docIDsUser.length,
-                        itemBuilder: (context, index){
+                        itemBuilder: (context, index) {
                           return ListTile(
                             title: GetUserData(documentId: docIDsUser[index]),
                           );
                         },
                       );
-                }),
+                    }),
               ),
-
               InkWell(
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
@@ -88,7 +84,8 @@ class _ProfileViewState extends State<ProfileView> {
                     //Navigator.of(context).pushNamed(AuthenticationPageRoute);
                   },
                   child: Container(
-                      decoration: BoxDecoration(color: Colors.deepPurple,
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurple,
                           borderRadius: BorderRadius.circular(20)),
                       alignment: Alignment.center,
                       width: double.maxFinite,
@@ -97,9 +94,8 @@ class _ProfileViewState extends State<ProfileView> {
                         'sign out',
                         style: TextStyle(
                           color: Colors.white,
-                        ),)
-                  )
-              ),
+                        ),
+                      ))),
             ],
           ),
         ),

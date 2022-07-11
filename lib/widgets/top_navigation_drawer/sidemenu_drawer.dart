@@ -10,11 +10,11 @@ import '../top_navbar_item/top_navbar_item.dart';
 import 'sidemenu_drawer_header.dart';
 
 class SideMenuDrawer extends StatelessWidget {
-
 //drawer for hamburgericon (menu) in mobile screen - used in layout_template.dart
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);  // creating an instance of authProvider
+    final authProvider = Provider.of<AuthProvider>(
+        context); // creating an instance of authProvider
 
     bool currentRouteIsAdmin = false;
     bool currentRouteIsUser = false;
@@ -22,16 +22,21 @@ class SideMenuDrawer extends StatelessWidget {
 
     // checking if an admin, an user or a scientist page is the currentRoute and then set the specific bool value to true
     Navigator.popUntil(context, (currentRoute) {
-      if (currentRoute.settings.name == RegristrationScientistRoute || currentRoute.settings.name == RegristrationAdminRoute ||
-          currentRoute.settings.name == DashboardRoute || currentRoute.settings.name == UsersAdministrationRoute) {
+      if (currentRoute.settings.name == RegristrationScientistRoute ||
+          currentRoute.settings.name == RegristrationAdminRoute ||
+          currentRoute.settings.name == DashboardRoute ||
+          currentRoute.settings.name == UsersAdministrationRoute) {
         currentRouteIsAdmin = true;
       }
-      if (currentRoute.settings.name == RegristrationScientistRoute ) {
+      if (currentRoute.settings.name == RegristrationScientistRoute) {
         currentRouteIsScientist = true;
       }
-      if (currentRoute.settings.name == InformationRoute || currentRoute.settings.name == NeuigkeitenRoute ||
-          currentRoute.settings.name == AuthenticationPageRoute || currentRoute.settings.name == RegristrationUserRoute ||
-          currentRoute.settings.name == ForgotPasswordRoute || currentRoute.settings.name == AccessDeniedRoute) {
+      if (currentRoute.settings.name == InformationRoute ||
+          currentRoute.settings.name == NeuigkeitenRoute ||
+          currentRoute.settings.name == AuthenticationPageRoute ||
+          currentRoute.settings.name == RegristrationUserRoute ||
+          currentRoute.settings.name == ForgotPasswordRoute ||
+          currentRoute.settings.name == AccessDeniedRoute) {
         currentRouteIsUser = true;
       }
       // Return true so popUntil() pops nothing.
@@ -41,12 +46,13 @@ class SideMenuDrawer extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     // current user exist
-    if(user != null){
+    if (user != null) {
       // print('user is logged in ' + currentUserEmail2);
 
       // specific bool value for user is true and role is user, then create the user TopNavigationBar for user
       // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for user displayed
-      if(currentRouteIsUser == true && authProvider.status == Status.Unauthenticated){
+      if (currentRouteIsUser == true &&
+          authProvider.status == Status.Unauthenticated) {
         return SideMenuDrawerUserMobile();
       } else {
         if (authProvider.status == Status.Unauthenticated) {
@@ -56,7 +62,7 @@ class SideMenuDrawer extends StatelessWidget {
 
       // specific bool value for admin is true and role is admin, then create the user TopNavigationBar for admin
       // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for admin displayed
-      if(currentRouteIsAdmin == true && authProvider.status == Status.Admin) {
+      if (currentRouteIsAdmin == true && authProvider.status == Status.Admin) {
         return SideMenuDrawerAdminMobile();
       } else {
         if (authProvider.status == Status.Admin) {
@@ -66,7 +72,8 @@ class SideMenuDrawer extends StatelessWidget {
 
       // specific bool value for scientist is true and role is scientist, then create the user TopNavigationBar for scientist
       // 404_page_not_found Page not found don't have a route, so only the role need to get checked and then the TopNavigationBar for scientist displayed
-      if (currentRouteIsScientist == true && authProvider.status == Status.Scientist) {
+      if (currentRouteIsScientist == true &&
+          authProvider.status == Status.Scientist) {
         return SideMenuDrawerScientistMobile();
       } else {
         if (authProvider.status == Status.Scientist) {

@@ -25,25 +25,34 @@ class LayoutTemplate extends StatelessWidget {
         // sidemenu, because the screen is to small for TopNavigationBar -> responsivness of the website
         appBar: sizingInformation.deviceScreenType == DeviceScreenType.mobile
             ? TopNavigationBarMobile(scaffoldKey, context)
-            : PreferredSize(preferredSize: Size(screenSize.width, 1000),
-                child: sizingInformation.deviceScreenType == DeviceScreenType.tablet
+            : PreferredSize(
+                preferredSize: Size(screenSize.width, 1000),
+                child: sizingInformation.deviceScreenType ==
+                        DeviceScreenType.tablet
                     ? TopNavigationBarTablet()
-                    : TopNavigationBarDesktop()
-        ),
-        drawer: sizingInformation.deviceScreenType == DeviceScreenType.mobile ? SideMenuDrawer() : null,   //drawer of the sidemenu for the mobile screen
-        body: sizingInformation.deviceScreenType != DeviceScreenType.mobile ? CenteredView(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: child1,   //The widget child is the view/page returned from the router (get_PageRoutRoute)
+                    : TopNavigationBarDesktop()),
+        drawer: sizingInformation.deviceScreenType == DeviceScreenType.mobile
+            ? SideMenuDrawer()
+            : null, //drawer of the sidemenu for the mobile screen
+        body: sizingInformation.deviceScreenType != DeviceScreenType.mobile
+            ? CenteredView(
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child:
+                          child1, //The widget child is the view/page returned from the router (get_PageRoutRoute)
+                    )
+                  ],
+                ),
               )
-            ],
-          ),
-        ) : Column(
-          children: <Widget>[
-          Expanded(
-          child: child1,   //The widget child is the view/page returned from the router (get_PageRoutRoute)
-        ),],),
+            : Column(
+                children: <Widget>[
+                  Expanded(
+                    child:
+                        child1, //The widget child is the view/page returned from the router (get_PageRoutRoute)
+                  ),
+                ],
+              ),
       ),
     );
   }

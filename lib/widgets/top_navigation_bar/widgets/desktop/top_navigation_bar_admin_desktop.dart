@@ -4,10 +4,10 @@ import '../../../../routing/route_names.dart';
 import '../../../top_navbar_item/top_navbar_item.dart';
 import '../../top_navigation_bar_logo.dart';
 
-
 final FirebaseAuth auth = FirebaseAuth.instance;
 
-Future<String> currentUserEmail() async {    // get the email of the currentUser
+Future<String> currentUserEmail() async {
+  // get the email of the currentUser
   final String email = await auth.currentUser.email;
 
   return email;
@@ -26,43 +26,62 @@ class TopNavigationBarAdminDesktop extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarLogo(),
-          SizedBox(width: 15,),
-          Visibility(child: Text( "Admin", style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.normal,))),
+          SizedBox(
+            width: 15,
+          ),
+          Visibility(
+              child: Text("Admin",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                  ))),
 
-          Spacer(),      //Space between logo+text and widgets in the center of the row
+          Spacer(), //Space between logo+text and widgets in the center of the row
 
           TopNavBarItem('Userverwaltung', UsersAdministrationRoute),
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarItem('Dashboard', DashboardRoute),
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarItem('Informationen', DashboardRoute),
-          SizedBox(width: 30,),
+          SizedBox(
+            width: 30,
+          ),
           TopNavBarItem('Neuigkeiten', DashboardRoute),
 
           Spacer(), //Space between widgets in the center of the row and end of row
 
-          FutureBuilder<String>(     // displaying the email of the current user
+          FutureBuilder<String>(
+              // displaying the email of the current user
               future: currentEmail,
               builder: (_, AsyncSnapshot<String> snapshot) {
-                if(snapshot.connectionState == ConnectionState.done) {
-                  if (snapshot.hasError){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
                     return Text('Something went wrong');
                   }
-                  if(snapshot.hasData){
+                  if (snapshot.hasData) {
                     try {
                       return Text('eingeloggt als: \n' + snapshot.data);
-                    } catch (e){ print(e);}
+                    } catch (e) {
+                      print(e);
+                    }
                   }
                 } else {
                   return CircularProgressIndicator();
                 }
-              }
-          ),
+              }),
 
-          SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
 
           //sign out the current user - button
           TextButton.icon(
@@ -77,16 +96,11 @@ class TopNavigationBarAdminDesktop extends StatelessWidget {
               size: 20,
             ),
             label: Text("Logout",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14
-                )
-            ),
+                style: TextStyle(color: Colors.black, fontSize: 14)),
             style: ButtonStyle(
-              backgroundColor:
-              MaterialStateProperty.all<Color>(Colors.white),
-              padding: MaterialStateProperty.all<EdgeInsets>(
-                  EdgeInsets.all(10)),
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              padding:
+                  MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(10)),
             ),
           ),
         ],
